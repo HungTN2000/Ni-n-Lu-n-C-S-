@@ -14,7 +14,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
@@ -23,7 +25,6 @@ import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
-import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import user.Connect;
 
@@ -35,6 +36,9 @@ public class BKT extends javax.swing.JPanel {
 
 //    final String col[] = {"MÃ BKT", "MÃ ND", "TÊN CẤP ĐỘ", "TÊN CHỦ ĐỀ", "ĐIỂM"};
 //    final DefaultTableModel tbn = new DefaultTableModel(col, 0);
+    ArrayList<listBKT> list = new ArrayList<listBKT>();
+    int current = 0;
+
     DefaultTableModel tbn = new DefaultTableModel();
     Connect a = new Connect();
     Connection con = a.getConnection();
@@ -49,11 +53,12 @@ public class BKT extends javax.swing.JPanel {
 
     public BKT() {
         initComponents();
-        dataEnabledButton();
-        loadDataCBBMaND();
-        loadDataCBBLevel();
-        loadDataCBBTopic();
-        show_V();
+        dataEnabledButton(); //ẩn các nút
+        loadDataCBBMaND(); //lấy mã người dùng trong sql
+        loadDataCBBLevel(); //lấy tên cấp độ trong sql
+        loadDataCBBTopic(); //lấy tên chủ đề trong sql
+        load_dataClass(); //tải dữ liệu danh sách mảng
+        load_dataBKT(); //tải lên bảng
     }
 
     public void getConnection() {
@@ -69,29 +74,28 @@ public class BKT extends javax.swing.JPanel {
         }
     }
 
-    public ArrayList<listBKT> listVocabularyManagement() {
-        ArrayList<listBKT> adList = new ArrayList<>();
+    public void load_dataClass() {
         try {
-            String url = "Select * from BaiKiemTra";
+            String url = "SELECT MaBKT, MaND, TenCapDo, TenChuDe, Diem, NgayKiem = CONVERT(varchar, NgayKiem, 103)\n"
+                    + "FROM BaiKiemTra";
             st = con.createStatement();
             rs = st.executeQuery(url);
+            list.clear();
             listBKT data;
             while (rs.next()) {
-                data = new listBKT(rs.getString("MaBKT"), rs.getString("MaND"), rs.getString("TenCapDo"), rs.getString("TenChuDe"), rs.getFloat("Diem"));
-                adList.add(data);
+                data = new listBKT(rs.getString("MaBKT"), rs.getString("MaND"), rs.getString("TenCapDo"), rs.getString("TenChuDe"), rs.getFloat("Diem"), rs.getString("NgayKiem"));
+                list.add(data);
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
-        return adList;
     }
 
-    public void show_V() {
-        ArrayList<listBKT> list = listVocabularyManagement();
+    public void load_dataBKT() {
         tbn = (DefaultTableModel) tblBKT.getModel();
         tbn.setRowCount(0);
         for (listBKT i : list) {
-            tbn.addRow(new Object[]{i.getMaBKT(), i.getMaND(), i.getTenCapDo(), i.getTenChuDe(), i.getDiem()});
+            tbn.addRow(new Object[]{i.getMaBKT(), i.getMaND(), i.getTenCapDo(), i.getTenChuDe(), i.getDiem(), i.getNgayKiem()});
         }
         JTableHeader Theader = tblBKT.getTableHeader();
 
@@ -191,7 +195,7 @@ public class BKT extends javax.swing.JPanel {
         cbbTenCapDo = new javax.swing.JComboBox<>();
         cbbTenChuDe = new javax.swing.JComboBox<>();
         txtDiem = new javax.swing.JTextField();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        txtDate = new com.toedter.calendar.JDateChooser();
         RightLast = new javax.swing.JPanel();
         btnAdd = new javax.swing.JButton();
         btnSave = new javax.swing.JButton();
@@ -289,19 +293,23 @@ public class BKT extends javax.swing.JPanel {
         tblBKT.setForeground(new java.awt.Color(0, 0, 0));
         tblBKT.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "MÃ BKT", "MÃ ND", "TÊN CẤP ĐỘ", "TÊN CHỦ ĐỀ", "ĐIỂM"
+                "MÃ BKT", "MÃ ND", "TÊN CẤP ĐỘ", "TÊN CHỦ ĐỀ", "ĐIỂM", "NGÀY KIỂM"
             }
         ));
         tblBKT.setGridColor(new java.awt.Color(0, 0, 0));
@@ -368,7 +376,7 @@ public class BKT extends javax.swing.JPanel {
         txtDiem.setFont(new java.awt.Font("Dialog", 0, 16)); // NOI18N
         txtDiem.setPreferredSize(new java.awt.Dimension(300, 35));
 
-        jDateChooser1.setPreferredSize(new java.awt.Dimension(300, 35));
+        txtDate.setPreferredSize(new java.awt.Dimension(300, 35));
 
         javax.swing.GroupLayout RightTopLayout = new javax.swing.GroupLayout(RightTop);
         RightTop.setLayout(RightTopLayout);
@@ -388,7 +396,7 @@ public class BKT extends javax.swing.JPanel {
                     .addComponent(cbbTenChuDe, 0, 312, Short.MAX_VALUE)
                     .addComponent(cbbTenCapDo, 0, 1, Short.MAX_VALUE)
                     .addComponent(txtDiem, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
-                    .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(cbbMaND, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtMaBKT, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -419,7 +427,7 @@ public class BKT extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addGroup(RightTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtDate, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -506,17 +514,19 @@ public class BKT extends javax.swing.JPanel {
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         try {
-            String url = "insert into BaiKiemTra values (?,?,?,?,?)";
+            String url = "insert into BaiKiemTra values (?,?,?,?,?,?)";
             pst = con.prepareStatement(url);
             pst.setString(1, txtMaBKT.getText());
             pst.setString(2, cbbMaND.getSelectedItem().toString());
             pst.setString(3, cbbTenCapDo.getSelectedItem().toString());
             pst.setString(4, cbbTenChuDe.getSelectedItem().toString());
             pst.setString(5, txtDiem.getText());
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+            String date = sdf.format(txtDate.getDate());
+            pst.setString(6, date);
             pst.executeUpdate();
-            DefaultTableModel model = (DefaultTableModel) tblBKT.getModel();
-            model.setRowCount(0);
-            show_V();
+            load_dataClass();
+            load_dataBKT();
             JOptionPane.showMessageDialog(null, "Lưu dữ liệu thành công.");
             btnAdd.setEnabled(true);
             dataEnabledButton();
@@ -527,43 +537,57 @@ public class BKT extends javax.swing.JPanel {
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        if (txtMaBKT.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Nhập mã bài kiểm muốn xóa!");
+            txtMaBKT.requestFocus();
+            return;
+        }
         try {
-            pst = con.prepareStatement("Delete BaiKiemTra where MaBKT=?");
-            pst.setString(1, tblBKT.getValueAt(tblBKT.getSelectedRow(), 0).toString());
+            int row = 0;
+            pst = con.prepareStatement("Delete from BaiKiemTra where MaBKT=?");
+            pst.setString(1, txtMaBKT.getText());
             if (JOptionPane.showConfirmDialog(this, "Bạn có muốn xóa?", "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 pst.executeUpdate();
-                DefaultTableModel model = (DefaultTableModel) tblBKT.getModel();
-                model.setRowCount(0);
-                show_V();
-                JOptionPane.showMessageDialog(this, "Xóa thành công");
+                if (row > 0) {
+                    JOptionPane.showMessageDialog(this, "Xóa thành công");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Xóa thất bại");
+                }
             }
             btnAdd.setEnabled(true);
-            dataEnabledButton();
-            reset();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Xóa thất bại");
+            JOptionPane.showMessageDialog(this, "Lỗi");
+            System.out.print(e.toString());
         }
+
+        load_dataClass();
+        load_dataBKT();
+        dataEnabledButton();
+        reset();
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
         try {
-            pst = con.prepareStatement("Update BaiKiemTra set MaND=?,TenCapDo=?,TenChuDe=?,Diem=? where MaBKT=?");
-            pst.setString(5, txtMaBKT.getText());
+            pst = con.prepareStatement("Update BaiKiemTra set MaND=?,TenCapDo=?,TenChuDe=?,Diem=?, NgayKiem=? where MaBKT=?");
+            pst.setString(6, txtMaBKT.getText());
             pst.setString(1, cbbMaND.getSelectedItem().toString());
             pst.setString(2, cbbTenCapDo.getSelectedItem().toString());
             pst.setString(3, cbbTenChuDe.getSelectedItem().toString());
             pst.setString(4, txtDiem.getText());
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+            String date = sdf.format(txtDate.getDate());
+            pst.setString(5, date);
             pst.executeUpdate();
-            DefaultTableModel model = (DefaultTableModel) tblBKT.getModel();
-            model.setRowCount(0);
-            show_V();
             JOptionPane.showMessageDialog(this, "Cập nhật thành công.");
             btnAdd.setEnabled(true);
-            dataEnabledButton();
-            reset();
         } catch (Exception e) {
             System.out.println(e.toString());
         }
+
+        load_dataClass();
+        load_dataBKT();
+        dataEnabledButton();
+        reset();
     }//GEN-LAST:event_btnEditActionPerformed
 
     private void txtSearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyReleased
@@ -593,14 +617,8 @@ public class BKT extends javax.swing.JPanel {
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void tblBKTMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBKTMouseClicked
-        int i = tblBKT.getSelectedRow();
-        TableModel model = tblBKT.getModel();
-
-        txtMaBKT.setText(model.getValueAt(i, 0).toString());
-        cbbMaND.setSelectedItem(model.getValueAt(i, 1).toString());
-        cbbTenCapDo.setSelectedItem(model.getValueAt(i, 2).toString());
-        cbbTenChuDe.setSelectedItem(model.getValueAt(i, 3).toString());
-        txtDiem.setText(model.getValueAt(i, 4).toString());
+        current = tblBKT.getSelectedRow();
+        show_frame(current);
 
         dataNotEnabledButton();
     }//GEN-LAST:event_tblBKTMouseClicked
@@ -608,6 +626,24 @@ public class BKT extends javax.swing.JPanel {
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
         reset();
     }//GEN-LAST:event_btnResetActionPerformed
+
+    public void show_frame(int current) {
+        listBKT p = list.get(current);
+
+        txtMaBKT.setText(p.getMaBKT());
+        cbbMaND.setSelectedItem(p.getMaND());
+        cbbTenCapDo.setSelectedItem(p.getTenCapDo());
+        cbbTenChuDe.setSelectedItem(p.getTenChuDe());
+        String point = Float.toString(p.getDiem());
+        txtDiem.setText(point);
+        try {
+            int srow = tblBKT.getSelectedRow();
+            Date date = new SimpleDateFormat("dd-MM-yyyy").parse((String) p.getNgayKiem());
+            txtDate.setDate(date);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
 
     public void dataEnabledButton() {
         btnAdd.setEnabled(true);
@@ -620,6 +656,7 @@ public class BKT extends javax.swing.JPanel {
         cbbTenCapDo.setEnabled(false);
         cbbTenChuDe.setEnabled(false);
         txtDiem.setEnabled(false);
+        txtDate.setEnabled(false);
     }
 
     public void dataNotEnabledButton() {
@@ -633,6 +670,7 @@ public class BKT extends javax.swing.JPanel {
         cbbTenCapDo.setEnabled(true);
         cbbTenChuDe.setEnabled(true);
         txtDiem.setEnabled(true);
+        txtDate.setEnabled(true);
     }
 
     public void reset() {
@@ -641,6 +679,7 @@ public class BKT extends javax.swing.JPanel {
         cbbTenCapDo.setSelectedItem(0);
         cbbTenChuDe.setSelectedItem(0);
         txtDiem.setText("");
+        txtDate.setDate(null);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -659,7 +698,6 @@ public class BKT extends javax.swing.JPanel {
     private javax.swing.JComboBox<String> cbbMaND;
     private javax.swing.JComboBox<String> cbbTenCapDo;
     private javax.swing.JComboBox<String> cbbTenChuDe;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -672,6 +710,7 @@ public class BKT extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTable tblBKT;
+    private com.toedter.calendar.JDateChooser txtDate;
     private javax.swing.JTextField txtDiem;
     private javax.swing.JTextField txtMaBKT;
     private javax.swing.JTextField txtSearch;

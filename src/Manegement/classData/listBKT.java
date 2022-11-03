@@ -5,6 +5,8 @@
  */
 package Manegement.classData;
 
+import java.util.Date;
+
 /**
  *
  * @author HP
@@ -12,16 +14,18 @@ package Manegement.classData;
 public class listBKT {
     private String maBKT, maND, tenCapDo, tenChuDe;
     private float Diem;
+    private String NgayKiem;
 
     public listBKT() {
     }
 
-    public listBKT(String maBKT, String maND, String tenCapDo, String tenChuDe, float Diem) {
+    public listBKT(String maBKT, String maND, String tenCapDo, String tenChuDe, float Diem, String NgayKiem) {
         this.maBKT = maBKT;
         this.maND = maND;
         this.tenCapDo = tenCapDo;
         this.tenChuDe = tenChuDe;
         this.Diem = Diem;
+        this.NgayKiem = NgayKiem;
     }
 
     public String getMaBKT() {
@@ -63,6 +67,15 @@ public class listBKT {
     public void setDiem(float Diem) {
         this.Diem = Diem;
     }
+
+    public String getNgayKiem() {
+        return NgayKiem;
+    }
+
+    public void setNgayKiem(String NgayKiem) {
+        this.NgayKiem = NgayKiem;
+    }
+
     
     
 }

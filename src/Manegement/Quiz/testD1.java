@@ -19,7 +19,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
-import javax.swing.ButtonGroup;
+import java.time.LocalDate;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
@@ -31,55 +31,57 @@ import user.Connect;
  * @author HP
  */
 public class testD1 extends javax.swing.JFrame {
-
+    
     public static final String SONG1 = "C:\\Java-JSP\\duan9\\src\\music\\correct.mp3";
     public static final String SONG2 = "C:\\Java-JSP\\duan9\\src\\music\\wrong.mp3";
     public static final String SONG3 = "C:\\Java-JSP\\duan9\\src\\music\\congratulations.mp3";
     MP3Player mp3player1 = new MP3Player(new File(SONG1));
     MP3Player mp3player2 = new MP3Player(new File(SONG2));
     MP3Player mp3player3 = new MP3Player(new File(SONG3));
-
+    
     DefaultTableModel tbn = new DefaultTableModel();
     Connect a = new Connect();
     Connection con = a.getConnection();
     Statement st = null;
     PreparedStatement pst = null;
     ResultSet rs = null;
-
+    
     String fPath = null;
     byte[] img_DATA;
-
+    
     Timer timer;
-    int minute = 1, second = 30, cong = 0;
+//    int minute = 0, second = 0, cong = 0; //Tăng
+    int minute = 0, second = 60; //Giảm
     DecimalFormat dFormat = new DecimalFormat("00");
     String ddMinute, ddSecond;
-
+    
     int point = 0;
-    int count = 0;
-
+    int count = 0, cnt = 0;
+    
     private String MaND = "";
     private String MaBKT = "";
     private String username;
     int flag = 1;
-
+    
     public testD1(String username) {
         initComponents();
-        this.username = username;
         getSumRow();
+        this.username = username;
         getMaND();
         getMaBKT();
         getConnection();
         sumQuiz(); //Tổng số câu kiểm tra
         loadDataSQL();
+        txtTime.setText("Thời gian: 00:00");
         runTime();
         this.setResizable(false);
         btnSubmit.setEnabled(false);
     }
-
+    
     private testD1() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     public void getConnection() {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
@@ -104,13 +106,10 @@ public class testD1 extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         Top = new javax.swing.JPanel();
-        ProgressBar1 = new javax.swing.JProgressBar();
-        txtHoTen = new javax.swing.JLabel();
-        txtUsername = new javax.swing.JLabel();
-        lblSumQuiz = new javax.swing.JLabel();
+        txtMaBKT = new javax.swing.JLabel();
         btnReturn = new javax.swing.JLabel();
-        txt1 = new javax.swing.JTextField();
-        txt2 = new javax.swing.JTextField();
+        txtTime = new javax.swing.JLabel();
+        txtNumber = new javax.swing.JLabel();
         Main = new javax.swing.JPanel();
         Left = new javax.swing.JPanel();
         Question = new javax.swing.JPanel();
@@ -135,71 +134,44 @@ public class testD1 extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(0, 191, 255));
         jPanel1.setLayout(new java.awt.BorderLayout());
 
+        Top.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
         Top.setOpaque(false);
-        Top.setPreferredSize(new java.awt.Dimension(1100, 100));
+        Top.setPreferredSize(new java.awt.Dimension(1100, 80));
+        Top.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        ProgressBar1.setForeground(new java.awt.Color(0, 255, 127));
-        ProgressBar1.setMinimum(0);
-        ProgressBar1.setValue(100);
+        txtMaBKT.setBackground(new java.awt.Color(255, 255, 255));
+        txtMaBKT.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        txtMaBKT.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        txtMaBKT.setOpaque(true);
+        txtMaBKT.setPreferredSize(new java.awt.Dimension(135, 35));
+        Top.add(txtMaBKT, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 20, 210, 35));
 
-        txtHoTen.setBackground(new java.awt.Color(255, 255, 255));
-        txtHoTen.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
-        txtHoTen.setOpaque(true);
-        txtHoTen.setPreferredSize(new java.awt.Dimension(120, 35));
-
-        txtUsername.setBackground(new java.awt.Color(255, 255, 255));
-        txtUsername.setFont(new java.awt.Font("Verdana", 0, 20)); // NOI18N
-        txtUsername.setOpaque(true);
-        txtUsername.setPreferredSize(new java.awt.Dimension(120, 35));
-
-        lblSumQuiz.setBackground(new java.awt.Color(255, 255, 255));
-        lblSumQuiz.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
-        lblSumQuiz.setOpaque(true);
-        lblSumQuiz.setPreferredSize(new java.awt.Dimension(135, 35));
-
-        btnReturn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/close.png"))); // NOI18N
+        btnReturn.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        btnReturn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/4295560_reply_answear_query_replies_respond_icon.png"))); // NOI18N
+        btnReturn.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED, java.awt.Color.white, java.awt.Color.white));
+        btnReturn.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnReturn.setOpaque(true);
+        btnReturn.setPreferredSize(new java.awt.Dimension(36, 35));
         btnReturn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnReturnMouseClicked(evt);
             }
         });
+        Top.add(btnReturn, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 60, 35));
 
-        txt1.setFont(new java.awt.Font("sansserif", 0, 18)); // NOI18N
+        txtTime.setBackground(new java.awt.Color(255, 255, 255));
+        txtTime.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        txtTime.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        txtTime.setOpaque(true);
+        txtTime.setPreferredSize(new java.awt.Dimension(135, 35));
+        Top.add(txtTime, new org.netbeans.lib.awtextra.AbsoluteConstraints(920, 20, 160, 35));
 
-        javax.swing.GroupLayout TopLayout = new javax.swing.GroupLayout(Top);
-        Top.setLayout(TopLayout);
-        TopLayout.setHorizontalGroup(
-            TopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(ProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(TopLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblSumQuiz, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtHoTen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(txt1, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(txt2, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 143, Short.MAX_VALUE)
-                .addComponent(btnReturn)
-                .addContainerGap())
-        );
-        TopLayout.setVerticalGroup(
-            TopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, TopLayout.createSequentialGroup()
-                .addContainerGap(21, Short.MAX_VALUE)
-                .addGroup(TopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lblSumQuiz, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtHoTen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtUsername, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnReturn)
-                    .addComponent(txt1)
-                    .addComponent(txt2))
-                .addGap(18, 18, 18)
-                .addComponent(ProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+        txtNumber.setBackground(new java.awt.Color(255, 255, 255));
+        txtNumber.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        txtNumber.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        txtNumber.setOpaque(true);
+        txtNumber.setPreferredSize(new java.awt.Dimension(135, 35));
+        Top.add(txtNumber, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 20, 200, 35));
 
         jPanel1.add(Top, java.awt.BorderLayout.PAGE_START);
 
@@ -207,15 +179,17 @@ public class testD1 extends javax.swing.JFrame {
         Main.setLayout(new java.awt.BorderLayout());
 
         Left.setBackground(new java.awt.Color(245, 245, 220));
-        Left.setBorder(javax.swing.BorderFactory.createEmptyBorder(30, 50, 30, 50));
+        Left.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 0, 1, new java.awt.Color(0, 0, 0)), javax.swing.BorderFactory.createEmptyBorder(30, 50, 30, 50)));
         Left.setPreferredSize(new java.awt.Dimension(600, 500));
         Left.setLayout(new java.awt.BorderLayout());
 
         Question.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         Question.setLayout(new java.awt.BorderLayout());
 
-        lblMaCHTN.setFont(new java.awt.Font("Tahoma", 0, 20)); // NOI18N
+        lblMaCHTN.setFont(new java.awt.Font("Dialog", 1, 20)); // NOI18N
         lblMaCHTN.setText("Câu TN001:");
+        lblMaCHTN.setAutoscrolls(true);
+        lblMaCHTN.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)), javax.swing.BorderFactory.createEmptyBorder(0, 20, 0, 0)));
         lblMaCHTN.setPreferredSize(new java.awt.Dimension(0, 50));
         Question.add(lblMaCHTN, java.awt.BorderLayout.PAGE_START);
 
@@ -242,9 +216,9 @@ public class testD1 extends javax.swing.JFrame {
         rdbOption1.setFocusPainted(false);
         rdbOption1.setIconTextGap(30);
         rdbOption1.setMargin(new java.awt.Insets(2, 50, 2, 2));
-        rdbOption1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdbOption1ActionPerformed(evt);
+        rdbOption1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                rdbOption1MouseClicked(evt);
             }
         });
         OptionA.add(rdbOption1, java.awt.BorderLayout.CENTER);
@@ -261,9 +235,9 @@ public class testD1 extends javax.swing.JFrame {
         rdbOption2.setFocusPainted(false);
         rdbOption2.setIconTextGap(30);
         rdbOption2.setMargin(new java.awt.Insets(2, 50, 2, 2));
-        rdbOption2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdbOption2ActionPerformed(evt);
+        rdbOption2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                rdbOption2MouseClicked(evt);
             }
         });
         OptionB.add(rdbOption2, java.awt.BorderLayout.CENTER);
@@ -280,9 +254,9 @@ public class testD1 extends javax.swing.JFrame {
         rdbOption3.setFocusPainted(false);
         rdbOption3.setIconTextGap(30);
         rdbOption3.setMargin(new java.awt.Insets(2, 50, 2, 2));
-        rdbOption3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdbOption3ActionPerformed(evt);
+        rdbOption3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                rdbOption3MouseClicked(evt);
             }
         });
         OptionC.add(rdbOption3, java.awt.BorderLayout.CENTER);
@@ -299,9 +273,9 @@ public class testD1 extends javax.swing.JFrame {
         rdbOption4.setFocusPainted(false);
         rdbOption4.setIconTextGap(30);
         rdbOption4.setMargin(new java.awt.Insets(2, 50, 2, 2));
-        rdbOption4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rdbOption4ActionPerformed(evt);
+        rdbOption4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                rdbOption4MouseClicked(evt);
             }
         });
         OptionD.add(rdbOption4, java.awt.BorderLayout.CENTER);
@@ -378,11 +352,11 @@ public class testD1 extends javax.swing.JFrame {
         resultUpdateTest();
         setVisible(false);
     }//GEN-LAST:event_btnSubmitActionPerformed
-
+    
     public void resultUpdateTest() {
         try {
             String url = "UPDATE BaiKiemTra\n"
-                    + "SET Diem = '" + point * (10 / count) + "'\n"
+                    + "SET Diem = '" + point * (10.0 / count) + "'\n"
                     + "WHERE MaBKT='" + MaBKT + "' and MaND='" + MaND + "'";
             pst = con.prepareStatement(url);
             pst.executeUpdate();
@@ -392,104 +366,7 @@ public class testD1 extends javax.swing.JFrame {
         }
     }
 
-    private void rdbOption1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdbOption1ActionPerformed
-        if (rdbOption1.isSelected() == true) {
-            try {
-                //String MaCH = rs.getString("MaCH")
-                String answer = rs.getString("CauTraLoi");
-                String option1 = rs.getString("DapAnA");
-
-                if (option1.trim().equals(answer)) {
-                    mp3player1.play();
-                    OptionA.setBackground(Color.green);
-                    point += 1;
-                } else {
-                    OptionA.setBackground(Color.red);
-                    mp3player2.play();
-                    JOptionPane.showMessageDialog(this, answer);
-                }
-            } catch (Exception e) {
-            }
-            rdbOption2.setEnabled(false);
-            rdbOption3.setEnabled(false);
-            rdbOption4.setEnabled(false);
-        }
-    }//GEN-LAST:event_rdbOption1ActionPerformed
-
-    private void rdbOption2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdbOption2ActionPerformed
-        if (rdbOption2.isSelected() == true) {
-            try {
-                String answer = rs.getString("CauTraLoi");
-                String option2 = rs.getString("DapAnB");
-                if (option2.trim().equals(answer)) {
-                    mp3player1.play();
-                    OptionB.setBackground(Color.green);
-                    point += 1;
-                } else {
-                    OptionB.setBackground(Color.red);
-                    mp3player2.play();
-                    JOptionPane.showMessageDialog(this, answer);
-                }
-            } catch (Exception e) {
-            }
-            rdbOption1.setEnabled(false);
-            rdbOption3.setEnabled(false);
-            rdbOption4.setEnabled(false);
-        }
-    }//GEN-LAST:event_rdbOption2ActionPerformed
-
-    private void rdbOption3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdbOption3ActionPerformed
-        if (rdbOption3.isSelected() == true) {
-            try {
-                String answer = rs.getString("CauTraLoi");
-                String option3 = rs.getString("DapAnC");
-                if (option3.trim().equals(answer)) {
-                    mp3player1.play();
-                    OptionC.setBackground(Color.green);
-                    point += 1;
-                } else {
-                    OptionB.setBackground(Color.red);
-                    mp3player2.play();
-                    JOptionPane.showMessageDialog(this, answer);
-                }
-            } catch (Exception e) {
-            }
-            rdbOption1.setEnabled(false);
-            rdbOption2.setEnabled(false);
-            rdbOption4.setEnabled(false);
-        }
-    }//GEN-LAST:event_rdbOption3ActionPerformed
-
-    private void rdbOption4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdbOption4ActionPerformed
-        if (rdbOption4.isSelected() == true) {
-            try {
-                String answer = rs.getString("CauTraLoi");
-                String option4 = rs.getString("DapAnD");
-                if (option4.trim().equals(answer)) {
-                    mp3player1.play();
-                    OptionD.setBackground(Color.green);
-                    point += 1;
-                } else {
-                    OptionD.setBackground(Color.red);
-                    mp3player2.play();
-                    JOptionPane.showMessageDialog(this, answer);
-                }
-            } catch (Exception e) {
-            }
-            rdbOption1.setEnabled(false);
-            rdbOption2.setEnabled(false);
-            rdbOption3.setEnabled(false);
-        }
-    }//GEN-LAST:event_rdbOption4ActionPerformed
-
     private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
-        try {
-            if (rs.isLast()) {
-                JOptionPane.showMessageDialog(this, "Đã hoàn thành số câu hỏi kiểm tra.");
-                btnSubmit.setEnabled(true);
-            }
-        } catch (Exception e) {
-        }
         if (rdbOption1.isSelected() == false && rdbOption2.isSelected() == false
                 && rdbOption3.isSelected() == false && rdbOption4.isSelected() == false) {
             JOptionPane.showMessageDialog(this, "Vui lòng lựa chọn đáp án.");
@@ -510,12 +387,12 @@ public class testD1 extends javax.swing.JFrame {
                     rdbOption2.setSelected(false);
                     rdbOption3.setSelected(false);
                     rdbOption4.setSelected(false);
-
+                    
                     rdbOption1.setEnabled(true);
                     rdbOption2.setEnabled(true);
                     rdbOption3.setEnabled(true);
                     rdbOption4.setEnabled(true);
-
+                    
                     OptionA.setBackground(Color.white);
                     OptionB.setBackground(Color.white);
                     OptionC.setBackground(Color.white);
@@ -532,6 +409,136 @@ public class testD1 extends javax.swing.JFrame {
         setVisible(false);
     }//GEN-LAST:event_btnReturnMouseClicked
 
+    private void rdbOption1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rdbOption1MouseClicked
+        if (rdbOption1.isSelected() == true) {
+            try {
+                //String MaCH = rs.getString("MaCH")
+                String answer = rs.getString("CauTraLoi");
+                String option1 = rs.getString("DapAnA");
+                
+                if (option1.trim().equals(answer)) {
+                    OptionA.setBackground(Color.green);
+                    point += 1;
+                    mp3player1.play();
+                } else {
+                    OptionA.setBackground(Color.red);
+                    mp3player2.play();
+                    JOptionPane.showMessageDialog(this, "Câu trả lời : " + answer);
+                }
+                cnt += 1;
+            } catch (Exception e) {
+            }
+            rdbOption2.setEnabled(false);
+            rdbOption3.setEnabled(false);
+            rdbOption4.setEnabled(false);
+            
+            String t = Integer.toString(cnt);
+            txtNumber.setText("Số câu đã làm: " + t + " / " + count);
+            
+            if (cnt == count) {
+                JOptionPane.showMessageDialog(this, "Đã hoàn thành số câu hỏi kiểm tra.");
+                btnNext.setEnabled(false);
+                btnSubmit.setEnabled(true);
+            }
+        }
+    }//GEN-LAST:event_rdbOption1MouseClicked
+
+    private void rdbOption2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rdbOption2MouseClicked
+        if (rdbOption2.isSelected() == true) {
+            try {
+                String answer = rs.getString("CauTraLoi");
+                String option2 = rs.getString("DapAnB");
+                if (option2.trim().equals(answer)) {
+                    OptionB.setBackground(Color.green);
+                    point += 1;
+                    mp3player1.play();
+                } else {
+                    OptionB.setBackground(Color.red);
+                    mp3player2.play();
+                    JOptionPane.showMessageDialog(this, "Câu trả lời : " + answer);
+                }
+                cnt += 1;
+            } catch (Exception e) {
+            }
+            rdbOption1.setEnabled(false);
+            rdbOption3.setEnabled(false);
+            rdbOption4.setEnabled(false);
+            
+            String t = Integer.toString(cnt);
+            txtNumber.setText("Số câu đã làm: " + t + " / " + count);
+            
+            if (cnt == count) {
+                JOptionPane.showMessageDialog(this, "Đã hoàn thành số câu hỏi kiểm tra.");
+                btnNext.setEnabled(false);
+                btnSubmit.setEnabled(true);
+            }
+        }
+    }//GEN-LAST:event_rdbOption2MouseClicked
+
+    private void rdbOption3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rdbOption3MouseClicked
+        if (rdbOption3.isSelected() == true) {
+            try {
+                String answer = rs.getString("CauTraLoi");
+                String option3 = rs.getString("DapAnC");
+                if (option3.trim().equals(answer)) {
+                    OptionC.setBackground(Color.green);
+                    point += 1;
+                    mp3player1.play();
+                } else {
+                    OptionB.setBackground(Color.red);
+                    mp3player2.play();
+                    JOptionPane.showMessageDialog(this, "Câu trả lời : " + answer);
+                }
+                cnt += 1;
+            } catch (Exception e) {
+            }
+            rdbOption1.setEnabled(false);
+            rdbOption2.setEnabled(false);
+            rdbOption4.setEnabled(false);
+            
+            String t = Integer.toString(cnt);
+            txtNumber.setText("Số câu đã làm: " + t + " / " + count);
+            
+            if (cnt == count) {
+                JOptionPane.showMessageDialog(this, "Đã hoàn thành số câu hỏi kiểm tra.");
+                btnNext.setEnabled(false);
+                btnSubmit.setEnabled(true);
+            }
+        }
+    }//GEN-LAST:event_rdbOption3MouseClicked
+
+    private void rdbOption4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rdbOption4MouseClicked
+        if (rdbOption4.isSelected() == true) {
+            try {
+                String answer = rs.getString("CauTraLoi");
+                String option4 = rs.getString("DapAnD");
+                if (option4.trim().equals(answer)) {
+                    OptionD.setBackground(Color.green);
+                    point += 1;
+                    mp3player1.play();
+                } else {
+                    OptionD.setBackground(Color.red);
+                    mp3player2.play();
+                    JOptionPane.showMessageDialog(this, "Câu trả lời : " + answer);
+                }
+                cnt += 1;
+            } catch (Exception e) {
+            }
+            rdbOption1.setEnabled(false);
+            rdbOption2.setEnabled(false);
+            rdbOption3.setEnabled(false);
+            
+            String t = Integer.toString(cnt);
+            txtNumber.setText("Số câu đã làm: " + t + " / " + count);
+            
+            if (cnt == count) {
+                JOptionPane.showMessageDialog(this, "Đã hoàn thành số câu hỏi kiểm tra.");
+                btnNext.setEnabled(false);
+                btnSubmit.setEnabled(true);
+            }
+        }
+    }//GEN-LAST:event_rdbOption4MouseClicked
+    
     public void loadDataSQL() {
         try {
             rs.first();
@@ -544,9 +551,7 @@ public class testD1 extends javax.swing.JFrame {
             ImageIcon imgIcon = new ImageIcon(new ImageIcon(img).getImage().getScaledInstance(lblImg.getWidth(), lblImg.getHeight(), Image.SCALE_SMOOTH));
             lblImg.setIcon(imgIcon);
             img_DATA = img;
-            if (rdbOption1.equals(rs.getString(8))) {
-                rdbOption1.setBackground(Color.green);
-            }
+            txtNumber.setText("Số câu đã làm: 0 / " + count);
         } catch (Exception e) {
             System.out.println(e.toString());
         }
@@ -557,13 +562,12 @@ public class testD1 extends javax.swing.JFrame {
         try {
             pst = con.prepareStatement("Select * from NguoiDung where TaiKhoan = '" + username + "'");
             rs = pst.executeQuery();
-
+            
             while (rs.next()) {
                 //jLabel3.setText(rs.getString("HoTen"));
                 MaND = rs.getString("MaND");
-                txtUsername.setText(MaND);
             }
-
+            
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Lỗi tải dữ liệu MaND!");
         }
@@ -574,7 +578,7 @@ public class testD1 extends javax.swing.JFrame {
         try {
             pst = con.prepareStatement("Select * from BaiKiemTra");
             rs = pst.executeQuery();
-
+            
             while (rs.next()) {
                 flag++;
             }
@@ -583,48 +587,59 @@ public class testD1 extends javax.swing.JFrame {
         }
     }
 
-    //Lấy mã bài kiểm tra
+    //Sinh mã bài kiểm tra
     public void getMaBKT() {
         try {
             pst = con.prepareStatement("Select * from BaiKiemTra");
             rs = pst.executeQuery();
-
+            
             int i = 1;
             while (rs.next()) {
                 String checkMaBKT = rs.getString("MaBKT");
+                String checkMaND = rs.getString("MaND");
                 String checkTenCapDo = rs.getString("TenCapDo");
                 String checkTenChuDe = rs.getString("TenChuDe");
-
-                String temp = "BKT0" + i;
-                if (i <= flag) {
-                    if (!temp.equals(checkMaBKT)) {
+                
+                String temp = "";
+                if (i < 10) {
+                    temp = "BKT0" + i;
+                } else {
+                    temp = "BKT" + i;
+                }
+                
+                if (i < flag - 1 && !temp.trim().equals(checkMaBKT)) {
+                    if (i < 10) {
                         MaBKT = "BKT0" + i;
-                        i = flag + 1;
                     } else {
-                        if (MaND.equals(rs.getString("MaND")) && checkTenCapDo.trim().equals("Easy") && checkTenChuDe.trim().equals("Animal")) {
-                            MaBKT = "" + rs.getString("MaBKT");
-                        } else {
-                            MaBKT = "BKT0" + flag;
-                        }
+                        MaBKT = "BKT" + i;
                     }
-                    i += 1;
+                    break;
+                }
+                i += 1;
+                if (i == flag) {
+                    if (i < 10) {
+                        MaBKT = "BKT0" + i;
+                    } else {
+                        MaBKT = "BKT" + i;
+                    }
                 }
             }
-            if (MaBKT.isEmpty()) {
-                MaBKT = "BKT0" + 1;
-            }
-            txtHoTen.setText(MaBKT);
+//            if (MaBKT.isEmpty()) {
+//                MaBKT = "BKT0" + 1;
+//            }
+            txtMaBKT.setText("Mã bài kiểm tra: " + MaBKT);
             addMaBKT();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Lỗi tải dữ liệu MaBKT!");
         }
     }
 
-    //Thêm dữ liệu tự động 
+//Thêm dữ liệu tự động 
     public void addMaBKT() {
         try {
-            String url = "Insert into BaiKiemTra  (MaBKT, MaND, TenCapDo,TenChuDe,Diem)\n"
-                    + "values ('" + MaBKT + "', '" + MaND + "', 'Easy', 'Animals', 0.0)";
+            LocalDate ld = LocalDate.now();
+            String url = "Insert into BaiKiemTra  (MaBKT, MaND, TenCapDo,TenChuDe,Diem,NgayKiem)\n"
+                    + "values ('" + MaBKT + "', '" + MaND + "', 'Easy', 'Animals', 0.0, '" + ld + "')";
             pst = con.prepareStatement(url);
             pst.executeUpdate();
         } catch (Exception e) {
@@ -639,71 +654,58 @@ public class testD1 extends javax.swing.JFrame {
                 rs.next();
                 count += 1;
             }
-            String sum = Integer.toString(count);
-            lblSumQuiz.setText("Tổng số câu: " + sum);
         } catch (Exception e) {
         }
     }
 
+//    //Thời gian + format + tăng
 //    public void runTime() {
-//        timer = new Timer(100, new ActionListener() {
+//        timer = new Timer(1000, new ActionListener() {
 //            @Override
 //            public void actionPerformed(ActionEvent e) {
 //                second++;
 //                ddSecond = dFormat.format(second);
 //                ddMinute = dFormat.format(minute);
 //
-//                cong ++;
-//                ProgressBar1.setValue(cong);
+//                txtTime.setText("Thời gian: " + ddMinute + ":" + ddSecond);
 //
-//                txtTime.setText("Thời gian: " + minute + " : " + second);
 //                if (second == 60) {
 //                    second = 0;
 //                    minute++;
-//
 //                    ddSecond = dFormat.format(second);
 //                    ddMinute = dFormat.format(minute);
-//                    txtTime.setText("Thời gian: " + minute + ":" + second);
-//                }
-//                if (cong == 100) {
-//                    timer.stop();
-//                    resultUpdateTest();
+//                    txtTime.setText("Thời gian: " + ddMinute + ":" + ddSecond);
 //                }
 //            }
 //        });
 //        timer.start();
 //    }
-
-    //Thời gian + format
-
+    //Thời gian + format + giảm
     public void runTime() {
-        timer = new Timer(500, new ActionListener() {
+        timer = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 second--;
                 ddSecond = dFormat.format(second);
                 ddMinute = dFormat.format(minute);
-
-                cong ++;
-                ProgressBar1.setValue(cong);
-
-                txt1.setText("Thời gian: " + minute + " : " + second);
-                if (second == -1) {
+                
+                txtTime.setText("Thời gian: " + ddMinute + ":" + ddSecond);
+                
+                if (second == 1) {
                     second = 59;
                     minute--;
-
                     ddSecond = dFormat.format(second);
                     ddMinute = dFormat.format(minute);
-                    txt1.setText("Thời gian: " + minute + ":" + second);
+                    txtTime.setText("Thời gian: " + ddMinute + ":" + ddSecond);
                 }
-                if (minute == 0 && second == 0 && cong == 500) {
+                if (minute == 0 && second == 0) {
                     timer.stop();
-                    resultUpdateTest();
                 }
             }
         });
         timer.start();
     }
+
     /**
      * @param args the command line arguments
      */
@@ -718,16 +720,24 @@ public class testD1 extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+                    
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(testD1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(testD1.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(testD1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(testD1.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(testD1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(testD1.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(testD1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(testD1.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
@@ -748,7 +758,6 @@ public class testD1 extends javax.swing.JFrame {
     private javax.swing.JPanel OptionB;
     private javax.swing.JPanel OptionC;
     private javax.swing.JPanel OptionD;
-    private javax.swing.JProgressBar ProgressBar1;
     private javax.swing.JPanel Question;
     private javax.swing.JPanel Right;
     private javax.swing.JPanel Top;
@@ -759,14 +768,12 @@ public class testD1 extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JLabel lblImg;
     private javax.swing.JLabel lblMaCHTN;
-    private javax.swing.JLabel lblSumQuiz;
     private javax.swing.JRadioButton rdbOption1;
     private javax.swing.JRadioButton rdbOption2;
     private javax.swing.JRadioButton rdbOption3;
     private javax.swing.JRadioButton rdbOption4;
-    private javax.swing.JTextField txt1;
-    private javax.swing.JTextField txt2;
-    private javax.swing.JLabel txtHoTen;
-    private javax.swing.JLabel txtUsername;
+    private javax.swing.JLabel txtMaBKT;
+    private javax.swing.JLabel txtNumber;
+    private javax.swing.JLabel txtTime;
     // End of variables declaration//GEN-END:variables
 }

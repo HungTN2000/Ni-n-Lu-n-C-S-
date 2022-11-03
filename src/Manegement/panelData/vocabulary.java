@@ -328,12 +328,12 @@ public class vocabulary extends javax.swing.JPanel {
         });
 
         jPanel4.setOpaque(false);
-        jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 25, 10));
+        jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 20, 8));
 
-        btnAdd.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        btnAdd.setFont(new java.awt.Font("Dialog", 0, 20)); // NOI18N
         btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/34237_+_add_plus_icon.png"))); // NOI18N
         btnAdd.setText("Thêm");
-        btnAdd.setPreferredSize(new java.awt.Dimension(160, 40));
+        btnAdd.setPreferredSize(new java.awt.Dimension(160, 45));
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddActionPerformed(evt);
@@ -341,10 +341,10 @@ public class vocabulary extends javax.swing.JPanel {
         });
         jPanel4.add(btnAdd);
 
-        btnSave.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        btnSave.setFont(new java.awt.Font("Dialog", 0, 20)); // NOI18N
         btnSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/285657_floppy_guardar_save_icon.png"))); // NOI18N
         btnSave.setText("Lưu");
-        btnSave.setPreferredSize(new java.awt.Dimension(160, 40));
+        btnSave.setPreferredSize(new java.awt.Dimension(160, 45));
         btnSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSaveActionPerformed(evt);
@@ -352,10 +352,10 @@ public class vocabulary extends javax.swing.JPanel {
         });
         jPanel4.add(btnSave);
 
-        btnEdit.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        btnEdit.setFont(new java.awt.Font("Dialog", 0, 20)); // NOI18N
         btnEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/17009_arrows_exchange_interact_refresh_reload_icon.png"))); // NOI18N
         btnEdit.setText("Sửa");
-        btnEdit.setPreferredSize(new java.awt.Dimension(160, 40));
+        btnEdit.setPreferredSize(new java.awt.Dimension(160, 45));
         btnEdit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEditActionPerformed(evt);
@@ -363,10 +363,10 @@ public class vocabulary extends javax.swing.JPanel {
         });
         jPanel4.add(btnEdit);
 
-        btnDelete.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        btnDelete.setFont(new java.awt.Font("Dialog", 0, 20)); // NOI18N
         btnDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/34218_add_cross_delete_exit_remove_icon.png"))); // NOI18N
         btnDelete.setText("Xóa");
-        btnDelete.setPreferredSize(new java.awt.Dimension(160, 40));
+        btnDelete.setPreferredSize(new java.awt.Dimension(160, 45));
         btnDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDeleteActionPerformed(evt);
@@ -374,10 +374,10 @@ public class vocabulary extends javax.swing.JPanel {
         });
         jPanel4.add(btnDelete);
 
-        btnChooseImage.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        btnChooseImage.setFont(new java.awt.Font("Dialog", 0, 20)); // NOI18N
         btnChooseImage.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/211677_image_icon.png"))); // NOI18N
         btnChooseImage.setText("Tải ảnh");
-        btnChooseImage.setPreferredSize(new java.awt.Dimension(160, 40));
+        btnChooseImage.setPreferredSize(new java.awt.Dimension(160, 45));
         btnChooseImage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnChooseImageActionPerformed(evt);
@@ -385,10 +385,10 @@ public class vocabulary extends javax.swing.JPanel {
         });
         jPanel4.add(btnChooseImage);
 
-        btnReset.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        btnReset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/9855519_reset_reload_sync_update_icon.png"))); // NOI18N
+        btnReset.setFont(new java.awt.Font("Dialog", 0, 20)); // NOI18N
+        btnReset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/8542647_undo_back_icon.png"))); // NOI18N
         btnReset.setText("Làm sạch");
-        btnReset.setPreferredSize(new java.awt.Dimension(160, 40));
+        btnReset.setPreferredSize(new java.awt.Dimension(160, 45));
         btnReset.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnResetActionPerformed(evt);

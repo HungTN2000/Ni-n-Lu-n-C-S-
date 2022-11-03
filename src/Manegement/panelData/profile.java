@@ -294,10 +294,10 @@ public class profile extends javax.swing.JPanel {
         flowLayout1.setAlignOnBaseline(true);
         jPanel1.setLayout(flowLayout1);
 
-        btnAdd.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        btnAdd.setFont(new java.awt.Font("Dialog", 0, 20)); // NOI18N
         btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/34237_+_add_plus_icon.png"))); // NOI18N
         btnAdd.setText("Thêm");
-        btnAdd.setPreferredSize(new java.awt.Dimension(160, 40));
+        btnAdd.setPreferredSize(new java.awt.Dimension(160, 45));
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddActionPerformed(evt);
@@ -305,10 +305,10 @@ public class profile extends javax.swing.JPanel {
         });
         jPanel1.add(btnAdd);
 
-        btnSave.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        btnSave.setFont(new java.awt.Font("Dialog", 0, 20)); // NOI18N
         btnSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/285657_floppy_guardar_save_icon.png"))); // NOI18N
         btnSave.setText("Lưu");
-        btnSave.setPreferredSize(new java.awt.Dimension(160, 40));
+        btnSave.setPreferredSize(new java.awt.Dimension(160, 45));
         btnSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSaveActionPerformed(evt);
@@ -316,10 +316,10 @@ public class profile extends javax.swing.JPanel {
         });
         jPanel1.add(btnSave);
 
-        btnEdit.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        btnEdit.setFont(new java.awt.Font("Dialog", 0, 20)); // NOI18N
         btnEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/17009_arrows_exchange_interact_refresh_reload_icon.png"))); // NOI18N
         btnEdit.setText("Sửa");
-        btnEdit.setPreferredSize(new java.awt.Dimension(160, 40));
+        btnEdit.setPreferredSize(new java.awt.Dimension(160, 45));
         btnEdit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEditActionPerformed(evt);
@@ -327,10 +327,10 @@ public class profile extends javax.swing.JPanel {
         });
         jPanel1.add(btnEdit);
 
-        btnDelete.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        btnDelete.setFont(new java.awt.Font("Dialog", 0, 20)); // NOI18N
         btnDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/34218_add_cross_delete_exit_remove_icon.png"))); // NOI18N
         btnDelete.setText("Xóa");
-        btnDelete.setPreferredSize(new java.awt.Dimension(160, 40));
+        btnDelete.setPreferredSize(new java.awt.Dimension(160, 45));
         btnDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDeleteActionPerformed(evt);
@@ -338,10 +338,10 @@ public class profile extends javax.swing.JPanel {
         });
         jPanel1.add(btnDelete);
 
-        btnReset.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        btnReset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/9855519_reset_reload_sync_update_icon.png"))); // NOI18N
+        btnReset.setFont(new java.awt.Font("Dialog", 0, 20)); // NOI18N
+        btnReset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/8542647_undo_back_icon.png"))); // NOI18N
         btnReset.setText("Làm mới");
-        btnReset.setPreferredSize(new java.awt.Dimension(160, 40));
+        btnReset.setPreferredSize(new java.awt.Dimension(160, 45));
         btnReset.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnResetActionPerformed(evt);
@@ -567,7 +567,7 @@ public class profile extends javax.swing.JPanel {
         }
         try {
             int srow = tblProfile.getSelectedRow();
-            Date date = new SimpleDateFormat("dddd-MM-yyyy").parse((String) p.getNgaySinh());
+            Date date = new SimpleDateFormat("dd-MM-yyyy").parse((String) p.getNgaySinh());
             txtDate.setDate(date);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);

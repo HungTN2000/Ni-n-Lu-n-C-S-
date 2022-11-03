@@ -395,7 +395,7 @@ public class ChuDeQuiz extends javax.swing.JPanel {
         lession1.setBackground(new java.awt.Color(255, 255, 255));
         lession1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         lession1.setPreferredSize(new java.awt.Dimension(340, 200));
-        lession1.setLayout(new java.awt.BorderLayout());
+        lession1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lbl1.setBackground(new java.awt.Color(20, 17, 109));
         lbl1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
@@ -405,23 +405,26 @@ public class ChuDeQuiz extends javax.swing.JPanel {
         lbl1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         lbl1.setOpaque(true);
         lbl1.setPreferredSize(new java.awt.Dimension(274, 50));
-        lession1.add(lbl1, java.awt.BorderLayout.PAGE_START);
+        lession1.add(lbl1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1, 1, 338, -1));
 
         lblImgTopic1.setBackground(new java.awt.Color(255, 255, 255));
+        lblImgTopic1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        lblImgTopic1.setForeground(new java.awt.Color(102, 102, 102));
         lblImgTopic1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblImgTopic1.setText("BẮT ĐẦU");
         lblImgTopic1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 lblImgTopic1MouseClicked(evt);
             }
         });
-        lession1.add(lblImgTopic1, java.awt.BorderLayout.CENTER);
+        lession1.add(lblImgTopic1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1, 51, 338, 148));
 
         AnimalTopic.add(lession1);
 
         lession2.setBackground(new java.awt.Color(255, 255, 255));
         lession2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         lession2.setPreferredSize(new java.awt.Dimension(340, 200));
-        lession2.setLayout(new java.awt.BorderLayout());
+        lession2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lbl2.setBackground(new java.awt.Color(20, 17, 109));
         lbl2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
@@ -431,23 +434,26 @@ public class ChuDeQuiz extends javax.swing.JPanel {
         lbl2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         lbl2.setOpaque(true);
         lbl2.setPreferredSize(new java.awt.Dimension(274, 50));
-        lession2.add(lbl2, java.awt.BorderLayout.PAGE_START);
+        lession2.add(lbl2, new org.netbeans.lib.awtextra.AbsoluteConstraints(1, 1, 338, -1));
 
         lblImgTopic2.setBackground(new java.awt.Color(255, 255, 255));
+        lblImgTopic2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        lblImgTopic2.setForeground(new java.awt.Color(102, 102, 102));
         lblImgTopic2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblImgTopic2.setText("BẮT ĐẦU");
         lblImgTopic2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 lblImgTopic2MouseClicked(evt);
             }
         });
-        lession2.add(lblImgTopic2, java.awt.BorderLayout.CENTER);
+        lession2.add(lblImgTopic2, new org.netbeans.lib.awtextra.AbsoluteConstraints(1, 51, 338, 148));
 
         AnimalTopic.add(lession2);
 
         lession3.setBackground(new java.awt.Color(255, 255, 255));
         lession3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         lession3.setPreferredSize(new java.awt.Dimension(340, 200));
-        lession3.setLayout(new java.awt.BorderLayout());
+        lession3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lbl3.setBackground(new java.awt.Color(20, 17, 109));
         lbl3.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
@@ -457,23 +463,26 @@ public class ChuDeQuiz extends javax.swing.JPanel {
         lbl3.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         lbl3.setOpaque(true);
         lbl3.setPreferredSize(new java.awt.Dimension(274, 50));
-        lession3.add(lbl3, java.awt.BorderLayout.PAGE_START);
+        lession3.add(lbl3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1, 1, 338, -1));
 
         lblImgTopic3.setBackground(new java.awt.Color(255, 255, 255));
+        lblImgTopic3.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        lblImgTopic3.setForeground(new java.awt.Color(102, 102, 102));
         lblImgTopic3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblImgTopic3.setText("BẮT ĐẦU");
         lblImgTopic3.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 lblImgTopic3MouseClicked(evt);
             }
         });
-        lession3.add(lblImgTopic3, java.awt.BorderLayout.CENTER);
+        lession3.add(lblImgTopic3, new org.netbeans.lib.awtextra.AbsoluteConstraints(1, 51, 338, 148));
 
         AnimalTopic.add(lession3);
 
         lession4.setBackground(new java.awt.Color(255, 255, 255));
         lession4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         lession4.setPreferredSize(new java.awt.Dimension(340, 200));
-        lession4.setLayout(new java.awt.BorderLayout());
+        lession4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lbl4.setBackground(new java.awt.Color(20, 17, 109));
         lbl4.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
@@ -483,23 +492,26 @@ public class ChuDeQuiz extends javax.swing.JPanel {
         lbl4.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         lbl4.setOpaque(true);
         lbl4.setPreferredSize(new java.awt.Dimension(274, 50));
-        lession4.add(lbl4, java.awt.BorderLayout.PAGE_START);
+        lession4.add(lbl4, new org.netbeans.lib.awtextra.AbsoluteConstraints(1, 1, 338, -1));
 
         lblImgTopic4.setBackground(new java.awt.Color(255, 255, 255));
+        lblImgTopic4.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        lblImgTopic4.setForeground(new java.awt.Color(102, 102, 102));
         lblImgTopic4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblImgTopic4.setText("BẮT ĐẦU");
         lblImgTopic4.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 lblImgTopic4MouseClicked(evt);
             }
         });
-        lession4.add(lblImgTopic4, java.awt.BorderLayout.CENTER);
+        lession4.add(lblImgTopic4, new org.netbeans.lib.awtextra.AbsoluteConstraints(1, 51, 338, 148));
 
         AnimalTopic.add(lession4);
 
         lession5.setBackground(new java.awt.Color(255, 255, 255));
         lession5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         lession5.setPreferredSize(new java.awt.Dimension(340, 200));
-        lession5.setLayout(new java.awt.BorderLayout());
+        lession5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lbl5.setBackground(new java.awt.Color(20, 17, 109));
         lbl5.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
@@ -509,16 +521,19 @@ public class ChuDeQuiz extends javax.swing.JPanel {
         lbl5.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         lbl5.setOpaque(true);
         lbl5.setPreferredSize(new java.awt.Dimension(274, 50));
-        lession5.add(lbl5, java.awt.BorderLayout.PAGE_START);
+        lession5.add(lbl5, new org.netbeans.lib.awtextra.AbsoluteConstraints(1, 1, 338, -1));
 
         lblImgTopic5.setBackground(new java.awt.Color(255, 255, 255));
+        lblImgTopic5.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        lblImgTopic5.setForeground(new java.awt.Color(102, 102, 102));
         lblImgTopic5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblImgTopic5.setText("BẮT ĐẦU");
         lblImgTopic5.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 lblImgTopic5MouseClicked(evt);
             }
         });
-        lession5.add(lblImgTopic5, java.awt.BorderLayout.CENTER);
+        lession5.add(lblImgTopic5, new org.netbeans.lib.awtextra.AbsoluteConstraints(1, 51, 338, 148));
 
         AnimalTopic.add(lession5);
 
