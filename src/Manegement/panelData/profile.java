@@ -8,6 +8,7 @@ package Manegement.panelData;
 import Manegement.classData.listProfile;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,9 +17,9 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
@@ -46,21 +47,24 @@ public class profile extends javax.swing.JPanel {
     PreparedStatement pst = null;
     ResultSet rs = null;
 
+    String MaND = "";
+    int flag = 1;
+
     public profile() {
         initComponents();
-        dataEnabledButton();
+        getSumRow();
         load_Profile();
         load_dataProfile();
+        loadDataCBBSearchID();
+        dataEnabledButton();
     }
 
     public void loadDataCBBSearchID() {
         try {
-            pst = con.prepareStatement("Select MaND from NguoiDung");
+            pst = con.prepareStatement("Select * from NguoiDung");
             rs = pst.executeQuery();
 
             //Tạo 1 DefaultComboboxModel
-            DefaultComboBoxModel SeMSSV = (DefaultComboBoxModel) cbbSearchID.getModel();
-            SeMSSV.removeAllElements(); //Xóa hết dữ liệu trong combobox
             while (rs.next()) {
                 cbbSearchID.addItem(rs.getString("MaND"));
             }
@@ -72,9 +76,10 @@ public class profile extends javax.swing.JPanel {
 
     public void load_Profile() {
         try {
-            String url = "SELECT MaND, TaiKhoan, MatKhau, HoTen, GioiTinh = (CASE GioiTinh WHEN 'TRUE' THEN N'NAM' ELSE N'NỮ' END), NgaySinh = CONVERT(varchar, NGAYSINH, 103)\n"
-                    + ",DiaChi, Sdt, Email\n"
-                    + "FROM NguoiDung";
+//            String url = "SELECT MaND, TaiKhoan, MatKhau, HoTen, GioiTinh = (CASE GioiTinh WHEN 'TRUE' THEN N'NAM' ELSE N'NỮ' END), NgaySinh = CONVERT(varchar, NGAYSINH, 103)\n"
+//                    + ",DiaChi, Sdt, Email\n"
+//                    + "FROM NguoiDung";
+            String url = "SELECT * FROM NguoiDung";
             st = con.createStatement();
             rs = st.executeQuery(url);
             list.clear();
@@ -101,7 +106,6 @@ public class profile extends javax.swing.JPanel {
         Theader.setForeground(Color.black);
 
         Theader.setFont(new Font("Roboto", Font.BOLD, 17));
-        Theader.setForeground(Color.white);
         ((DefaultTableCellRenderer) Theader.getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
 
         tblProfile.setFont(new Font("Roboto", Font.PLAIN, 17));
@@ -140,6 +144,8 @@ public class profile extends javax.swing.JPanel {
         txtSDT = new javax.swing.JTextField();
         txtDiaChi = new javax.swing.JTextField();
         txtTaiKhoan = new javax.swing.JTextField();
+        btnTaoMa = new javax.swing.JButton();
+        jCheckBox4 = new javax.swing.JCheckBox();
         txtMatKhau = new javax.swing.JPasswordField();
         Option = new javax.swing.JPanel();
         txtSearch = new javax.swing.JTextField();
@@ -150,6 +156,8 @@ public class profile extends javax.swing.JPanel {
         btnEdit = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
         btnReset = new javax.swing.JButton();
+        btnSearch = new javax.swing.JButton();
+        jLabel13 = new javax.swing.JLabel();
         Bottom = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblProfile = new javax.swing.JTable();
@@ -227,7 +235,7 @@ public class profile extends javax.swing.JPanel {
         Content.add(lblMatKhau, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 65, 120, 35));
 
         txtMaND.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        Content.add(txtMaND, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 20, 250, 35));
+        Content.add(txtMaND, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 20, 150, 35));
 
         txtHoTen.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         Content.add(txtHoTen, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 65, 250, 35));
@@ -266,7 +274,26 @@ public class profile extends javax.swing.JPanel {
         txtTaiKhoan.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         Content.add(txtTaiKhoan, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 20, 250, -1));
 
+        btnTaoMa.setFont(new java.awt.Font("Dialog", 0, 16)); // NOI18N
+        btnTaoMa.setText("Tạo mã");
+        btnTaoMa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTaoMaActionPerformed(evt);
+            }
+        });
+        Content.add(btnTaoMa, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 20, -1, -1));
+
+        jCheckBox4.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        jCheckBox4.setText("Hiện mật khẩu");
+        jCheckBox4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox4ActionPerformed(evt);
+            }
+        });
+        Content.add(jCheckBox4, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 105, -1, 35));
+
         txtMatKhau.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        txtMatKhau.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         Content.add(txtMatKhau, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 65, 250, 35));
 
         Main.add(Content, java.awt.BorderLayout.CENTER);
@@ -282,11 +309,17 @@ public class profile extends javax.swing.JPanel {
                 txtSearchKeyReleased(evt);
             }
         });
-        Option.add(txtSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 199, 200, 35));
+        Option.add(txtSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 100, 200, 35));
 
         cbbSearchID.setEditable(true);
         cbbSearchID.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         cbbSearchID.setMaximumRowCount(5);
+        cbbSearchID.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "--- Chọn MaND ---" }));
+        cbbSearchID.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbbSearchIDActionPerformed(evt);
+            }
+        });
         Option.add(cbbSearchID, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 150, 200, 35));
 
         jPanel1.setOpaque(false);
@@ -350,6 +383,18 @@ public class profile extends javax.swing.JPanel {
         jPanel1.add(btnReset);
 
         Option.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 30, 200, 310));
+
+        btnSearch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/3844432_magnifier_search_zoom_icon.png"))); // NOI18N
+        btnSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchActionPerformed(evt);
+            }
+        });
+        Option.add(btnSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 100, 50, 35));
+
+        jLabel13.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel13.setText("Tìm kiếm");
+        Option.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 70, -1, -1));
 
         Main.add(Option, java.awt.BorderLayout.EAST);
 
@@ -433,10 +478,11 @@ public class profile extends javax.swing.JPanel {
                     btnAdd.setEnabled(true);
                     dataEnabledButton();
                     reset();
+                    flag++;
                 }
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Lỗi!!!");
+            JOptionPane.showMessageDialog(this, "Lưu không thành công!!!");
             System.out.println(e.toString());
         }
     }//GEN-LAST:event_btnSaveActionPerformed
@@ -446,36 +492,36 @@ public class profile extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Nhập mã người dùng muốn xóa!");
             txtMaND.requestFocus();
             return;
-        }
-        try {
-            pst = con.prepareStatement("Update NguoiDung set TaiKhoan=?,MatKhau=?, HoTen=?, GioiTinh=?, NgaySinh=?, DiaChi=?, SDT=?, Email=? where MaND=?");
-            pst.setString(9, txtMaND.getText());
-            pst.setString(1, txtTaiKhoan.getText());
-            pst.setString(2, txtMatKhau.getText());
-            pst.setString(3, txtHoTen.getText());
-            if (rdbMale.isSelected()) {
-                pst.setBoolean(4, true);
-            } else {
-                pst.setBoolean(4, false);
+        } else {
+            try {
+                pst = con.prepareStatement("Update NguoiDung set TaiKhoan=?,MatKhau=?, HoTen=?, GioiTinh=?, NgaySinh=?, DiaChi=?, SDT=?, Email=? where MaND=?");
+                pst.setString(9, txtMaND.getText());
+                pst.setString(1, txtTaiKhoan.getText());
+                pst.setString(2, txtMatKhau.getText());
+                pst.setString(3, txtHoTen.getText());
+                if (rdbMale.isSelected()) {
+                    pst.setBoolean(4, true);
+                } else {
+                    pst.setBoolean(4, false);
+                }
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                String date = sdf.format(txtDate.getDate());
+                pst.setString(5, date);
+                pst.setString(6, txtDiaChi.getText());
+                pst.setString(7, txtSDT.getText());
+                pst.setString(8, txtEmail.getText());
+                pst.executeUpdate();
+                JOptionPane.showMessageDialog(this, "Cập nhật thành công.");
+                btnAdd.setEnabled(true);
+                load_Profile();
+                load_dataProfile();
+                dataEnabledButton();
+                reset();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Cập nhật thất bại!!!");
+                System.out.println(e.toString());
             }
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-            String date = sdf.format(txtDate.getDate());
-            pst.setString(5, date);
-            pst.setString(6, txtDiaChi.getText());
-            pst.setString(7, txtSDT.getText());
-            pst.setString(8, txtEmail.getText());
-            pst.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Cập nhật thành công.");
-            btnAdd.setEnabled(true);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Lỗi!!!");
-            System.out.println(e.toString());
         }
-
-        load_Profile();
-        load_dataProfile();
-        dataEnabledButton();
-        reset();
     }//GEN-LAST:event_btnEditActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
@@ -483,28 +529,26 @@ public class profile extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Nhập mã người dùng muốn xóa!");
             txtMaND.requestFocus();
             return;
-        }
-        try {
-            int row = 0;
-            pst = con.prepareStatement("Delete from NguoiDung where MaND=?");
-            pst.setString(1, txtMaND.getText());
-            if (JOptionPane.showConfirmDialog(this, "Bạn có muốn xóa?", "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                pst.executeUpdate();
-                if (row > 0) {
+        } else {
+            try {
+                int row = 0;
+                pst = con.prepareStatement("Delete from NguoiDung where MaND=?");
+                pst.setString(1, txtMaND.getText());
+                if (JOptionPane.showConfirmDialog(this, "Bạn có muốn xóa?", "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    pst.executeUpdate();
                     JOptionPane.showMessageDialog(this, "Xóa thành công");
-                } else {
-                    JOptionPane.showMessageDialog(this, "Xóa thất bại");
+                    btnAdd.setEnabled(true);
+                    load_Profile();
+                    load_dataProfile();
+                    dataEnabledButton();
+                    reset();
+                    flag--;
                 }
-                btnAdd.setEnabled(true);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Xóa thất bại");
+                System.out.println(e.toString());
             }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Lỗi!!!");
-            System.out.println(e.toString());
         }
-        load_Profile();
-        load_dataProfile();
-        dataEnabledButton();
-        reset();
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
@@ -550,6 +594,147 @@ public class profile extends javax.swing.JPanel {
         dataNotEnabledButton();
     }//GEN-LAST:event_tblProfileMouseClicked
 
+    private void btnTaoMaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTaoMaActionPerformed
+        reset();
+        SinhMaBKT();
+    }//GEN-LAST:event_btnTaoMaActionPerformed
+
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        dataNotEnabledButton();
+        try {
+            pst = con.prepareStatement("SELECT * FROM NguoiDung WHERE MaND=?");
+            pst.setString(1, txtSearch.getText());
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                txtMaND.setText(rs.getString("MaND"));
+                txtTaiKhoan.setText(rs.getString("TaiKhoan"));
+                txtMatKhau.setText(rs.getString("MatKhau"));
+                txtHoTen.setText(rs.getString("HoTen"));
+                String gt = rs.getString("GioiTinh").trim();
+                if (gt.equals("1")) {
+                    rdbMale.setSelected(true);
+                } else {
+                    rdbFemale.setSelected(true);
+                }
+                try {
+                    int srow = tblProfile.getSelectedRow();
+                    Date date = new SimpleDateFormat("yyyy-MM-dd").parse((rs.getString("NgaySinh")));
+                    txtDate.setDate(date);
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, e);
+                }
+                txtDiaChi.setText(rs.getString("DiaChi"));
+                txtSDT.setText(rs.getString("SDT"));
+                txtEmail.setText(rs.getString("Email"));
+            } else {
+                JOptionPane.showMessageDialog(this, "KHÔNG TÌM THẤY!");
+                dataEnabledButton();
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e);
+            dataEnabledButton();
+        }
+    }//GEN-LAST:event_btnSearchActionPerformed
+
+    private void jCheckBox4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox4ActionPerformed
+        if (jCheckBox4.isSelected() == true) {
+            txtMatKhau.setEchoChar((char) 0);
+        } else {
+            txtMatKhau.setEchoChar('*');
+        }
+    }//GEN-LAST:event_jCheckBox4ActionPerformed
+
+    private void cbbSearchIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbbSearchIDActionPerformed
+        dataNotEnabledButton();
+        txtSearch.setText("");
+        try {
+            pst = con.prepareStatement("Select * from NguoiDung where MaND=?");
+            pst.setString(1, cbbSearchID.getSelectedItem().toString());
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                txtMaND.setText(rs.getString("MaND"));
+                txtTaiKhoan.setText(rs.getString("TaiKhoan"));
+                txtMatKhau.setText(rs.getString("MatKhau"));
+                txtHoTen.setText(rs.getString("HoTen"));
+                String gt = rs.getString("GioiTinh").trim();
+                if (gt.equals("1")) {
+                    rdbMale.setSelected(true);
+                } else {
+                    rdbFemale.setSelected(true);
+                }
+                try {
+                    int srow = tblProfile.getSelectedRow();
+                    Date date = new SimpleDateFormat("yyyy-MM-dd").parse((rs.getString("NgaySinh")));
+                    txtDate.setDate(date);
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, e);
+                }
+                txtDiaChi.setText(rs.getString("DiaChi"));
+                txtSDT.setText(rs.getString("SDT"));
+                txtEmail.setText(rs.getString("Email"));
+            }
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+    }//GEN-LAST:event_cbbSearchIDActionPerformed
+
+    //Đếm số lượng dòng bài kiểm tra
+    public void getSumRow() {
+        try {
+            pst = con.prepareStatement("Select * from NguoiDung");
+            rs = pst.executeQuery();
+
+            while (rs.next()) {
+                flag++;
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi tải dữ liệu mã người dùng!");
+        }
+    }
+
+    //Sinh mã bài kiểm tra
+    public void SinhMaBKT() {
+        try {
+            pst = con.prepareStatement("Select * from NguoiDung");
+            rs = pst.executeQuery();
+
+            int i = 1;
+            while (rs.next()) {
+                String checkMaBKT = rs.getString("MaND").trim();
+
+                String temp = "";
+                if (i < 10) {
+                    temp = "EFK00" + i;
+                } else {
+                    temp = "EFK0" + i;
+                }
+
+                if (i < flag && !checkMaBKT.trim().equals(temp)) {
+                    if (i < 10) {
+                        MaND = "EFK00" + i;
+                    } else {
+                        MaND = "TV0" + i;
+                    }
+                    break;
+                }
+                i += 1;
+                if (i == flag) {
+                    if (i < 10) {
+                        MaND = "EFK00" + i;
+                    } else {
+                        MaND = "EFK0" + i;
+                    }
+                }
+            }
+//            if (MaBKT.isEmpty()) {
+//                MaBKT = "BKT0" + 1;
+//            }
+            txtMaND.setText(MaND);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi tải dữ liệu MaND!");
+        }
+    }
+
     public void show_frame(int current) {
         listProfile p = list.get(current);
 
@@ -567,7 +752,7 @@ public class profile extends javax.swing.JPanel {
         }
         try {
             int srow = tblProfile.getSelectedRow();
-            Date date = new SimpleDateFormat("dd-MM-yyyy").parse((String) p.getNgaySinh());
+            Date date = new SimpleDateFormat("yyyy-MM-dd").parse((String) p.getNgaySinh());
             txtDate.setDate(date);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
@@ -593,6 +778,8 @@ public class profile extends javax.swing.JPanel {
         txtDiaChi.setEnabled(false);
         txtSDT.setEnabled(false);
         txtEmail.setEnabled(false);
+        btnTaoMa.setEnabled(false);
+        jCheckBox4.setEnabled(false);
     }
 
     public void dataNotEnabledButton() {
@@ -611,6 +798,8 @@ public class profile extends javax.swing.JPanel {
         txtDiaChi.setEnabled(true);
         txtSDT.setEnabled(true);
         txtEmail.setEnabled(true);
+        btnTaoMa.setEnabled(true);
+        jCheckBox4.setEnabled(true);
     }
 
     public void reset() {
@@ -624,11 +813,13 @@ public class profile extends javax.swing.JPanel {
         txtDiaChi.setText("");
         txtSDT.setText("");
         txtEmail.setText("");
+        txtSearch.setText("");
         txtMaND.setBackground(Color.white);
         txtTaiKhoan.setBackground(Color.white);
         txtMatKhau.setBackground(Color.white);
         txtSDT.setBackground(Color.white);
         txtEmail.setBackground(Color.white);
+        cbbSearchID.setSelectedIndex(0);
     }
 
     private void hopleMaND(StringBuilder sb) {
@@ -642,16 +833,18 @@ public class profile extends javax.swing.JPanel {
                 sb.append("Mã ND này đã tồn tại!\n");
                 txtMaND.setBackground(Color.green);
             } else {
-                String MaND = txtMaND.getText();
+                String MaND = txtMaND.getText().trim();
                 //Mã ND phải gồm EFK và 3 chữ số
                 String regex = "EFK\\d{3}";
-                Pattern pattern = Pattern.compile(regex);
-                Matcher matcher = pattern.matcher(MaND);
-                if (!matcher.find()) {
-                    sb.append("Mã ND sai định dạng, Mã ND phải gồm EFK và 3 chữ số, VD: EFK001\n");
-                    txtMaND.setBackground(Color.green);
-                } else {
-                    txtMaND.setBackground(Color.white);
+                Pattern p = Pattern.compile(regex);
+                //Matcher p = pattern.matcher(MaND);
+                if (MaND.length() > 0) {
+                    if (!MaND.matches(regex)) {
+                        sb.append("Mã ND sai định dạng, Mã ND phải gồm EFK và 3 chữ số, VD: EFK001\n");
+                        txtMaND.setBackground(Color.green);
+                    } else {
+                        txtMaND.setBackground(Color.white);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -787,9 +980,13 @@ public class profile extends javax.swing.JPanel {
     private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnSave;
+    private javax.swing.JButton btnSearch;
+    private javax.swing.JButton btnTaoMa;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JComboBox<String> cbbSearchID;
+    private javax.swing.JCheckBox jCheckBox4;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator2;

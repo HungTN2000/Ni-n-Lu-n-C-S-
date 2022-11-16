@@ -142,7 +142,7 @@
                               <Group type="102" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-                                      <Component id="txtIDQuestion" min="-2" pref="250" max="-2" attributes="0"/>
+                                      <Component id="txtIDQuestion" min="-2" pref="139" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="32767" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
@@ -155,6 +155,8 @@
                                           </Group>
                                       </Group>
                                       <Group type="102" alignment="1" attributes="0">
+                                          <Component id="btnTaoMa" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="32767" attributes="0"/>
                                           <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace min="18" pref="18" max="-2" attributes="0"/>
                                           <Component id="txtOption2" min="-2" pref="241" max="-2" attributes="0"/>
@@ -219,7 +221,10 @@
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Group type="102" alignment="0" attributes="0">
                                           <EmptySpace min="4" pref="4" max="-2" attributes="0"/>
-                                          <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="3" attributes="0">
+                                              <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="btnTaoMa" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          </Group>
                                       </Group>
                                       <Component id="txtOption2" alignment="0" min="-2" pref="35" max="-2" attributes="0"/>
                                   </Group>
@@ -768,6 +773,17 @@
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
           </AuxValues>
         </Component>
+        <Component class="javax.swing.JButton" name="btnTaoMa">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Dialog" size="16" style="0"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="T&#x1ea1;o m&#xe3;"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnTaoMaActionPerformed"/>
+          </Events>
+        </Component>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JPanel" name="Bottom">
@@ -817,8 +833,8 @@
                     <Column editable="true" title="&#x110;&#xc1;P &#xc1;N B" type="java.lang.Object"/>
                     <Column editable="true" title="&#x110;&#xc1;P &#xc1;N C" type="java.lang.Object"/>
                     <Column editable="true" title="&#x110;&#xc1;P &#xc1;N D" type="java.lang.Object"/>
-                    <Column editable="true" title="C&#xc2;U TR&#x1ea2; L&#x1edc;I" type="java.lang.Object"/>
                     <Column editable="true" title="H&#xcc;NH &#x1ea2;NH" type="java.lang.Object"/>
+                    <Column editable="true" title="C&#xc2;U TR&#x1ea2; L&#x1edc;I" type="java.lang.Object"/>
                     <Column editable="true" title="T&#xca;N CH&#x1ee6; &#x110;&#x1ec0;" type="java.lang.Object"/>
                     <Column editable="true" title="M&#xc3; TV" type="java.lang.Object"/>
                   </Table>

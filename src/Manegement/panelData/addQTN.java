@@ -17,6 +17,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -48,8 +50,12 @@ public class addQTN extends javax.swing.JPanel {
     String fPath = null;
     byte[] img_DATA;
 
+    String MaCHTN = "";
+    int flag = 1;
+
     public addQTN() {
         initComponents();
+        getSumRow();
         load_dataCHTN();
         loadDataCBBTopic();
         loadDataCBBMaTV();
@@ -115,7 +121,6 @@ public class addQTN extends javax.swing.JPanel {
         Theader.setForeground(Color.black);
 
         Theader.setFont(new Font("Roboto", Font.BOLD, 17));
-        Theader.setForeground(Color.white);
         ((DefaultTableCellRenderer) Theader.getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
 
         tblListQuestion.setFont(new Font("Roboto", Font.PLAIN, 17));
@@ -178,6 +183,7 @@ public class addQTN extends javax.swing.JPanel {
         cbbTopic = new javax.swing.JComboBox<>();
         jLabel11 = new javax.swing.JLabel();
         cbbMaTV = new javax.swing.JComboBox<>();
+        btnTaoMa = new javax.swing.JButton();
         Bottom = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblListQuestion = new javax.swing.JTable();
@@ -367,6 +373,14 @@ public class addQTN extends javax.swing.JPanel {
             }
         });
 
+        btnTaoMa.setFont(new java.awt.Font("Dialog", 0, 16)); // NOI18N
+        btnTaoMa.setText("Tạo mã");
+        btnTaoMa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTaoMaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout MainLayout = new javax.swing.GroupLayout(Main);
         Main.setLayout(MainLayout);
         MainLayout.setHorizontalGroup(
@@ -404,7 +418,7 @@ public class addQTN extends javax.swing.JPanel {
                             .addGroup(MainLayout.createSequentialGroup()
                                 .addGroup(MainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel2)
-                                    .addComponent(txtIDQuestion, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(txtIDQuestion, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(MainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, MainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -414,6 +428,8 @@ public class addQTN extends javax.swing.JPanel {
                                             .addGap(18, 18, 18)
                                             .addComponent(txtOption1, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, MainLayout.createSequentialGroup()
+                                        .addComponent(btnTaoMa)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(18, 18, 18)
                                         .addComponent(txtOption2, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE))))
@@ -463,7 +479,9 @@ public class addQTN extends javax.swing.JPanel {
                                 .addGroup(MainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(MainLayout.createSequentialGroup()
                                         .addGap(4, 4, 4)
-                                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(MainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(btnTaoMa)))
                                     .addComponent(txtOption2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(MainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -510,7 +528,7 @@ public class addQTN extends javax.swing.JPanel {
                 {null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "MÃ CHTN", "CÂU HỎI", "ĐÁP ÁN A", "ĐÁP ÁN B", "ĐÁP ÁN C", "ĐÁP ÁN D", "CÂU TRẢ LỜI", "HÌNH ẢNH", "TÊN CHỦ ĐỀ", "MÃ TV"
+                "MÃ CHTN", "CÂU HỎI", "ĐÁP ÁN A", "ĐÁP ÁN B", "ĐÁP ÁN C", "ĐÁP ÁN D", "HÌNH ẢNH", "CÂU TRẢ LỜI", "TÊN CHỦ ĐỀ", "MÃ TV"
             }
         ));
         tblListQuestion.setRowHeight(40);
@@ -534,52 +552,66 @@ public class addQTN extends javax.swing.JPanel {
     }//GEN-LAST:event_btnResetActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        StringBuilder sb = new StringBuilder();
         try {
-            String url = "insert into CauHoiTN values (?,?,?,?,?,?,?,?,?,?)";
-            pst = con.prepareStatement(url);
-            pst.setString(1, txtIDQuestion.getText());
-            pst.setString(2, txtQuestion.getText());
-            pst.setString(3, txtOption1.getText());
-            pst.setString(4, txtOption2.getText());
-            pst.setString(5, txtOption3.getText());
-            pst.setString(6, txtOption4.getText());
-            pst.setBytes(7, img_DATA);
-            pst.setString(8, txtAnswer.getText());
-            pst.setString(9, cbbTopic.getSelectedItem().toString());
-            pst.setString(10, cbbMaTV.getSelectedItem().toString());
-            pst.executeUpdate();
-            load_dataCHTN();
-            JOptionPane.showMessageDialog(null, "Lưu dữ liệu thành công.");
+            if (txtIDQuestion.getText().equals("") || txtQuestion.getText().equals("") || txtOption1.getText().equals("") || txtOption2.getText().equals("")
+                    || txtOption3.getText().equals("") || txtOption4.getText().equals("") || txtAnswer.getText().equals("")) {
+                JOptionPane.showMessageDialog(this, "Dữ liệu không được bỏ trống!");
+            } else {
+                hopleMaCHTN(sb);
+                if (sb.length() > 0) { //nếu if trên đúng nó sẽ thêm vào sb 1 đoạn string, ktra độ dài chuỗi này nếu lớn hơn 0 tức là có thông báo
+                    JOptionPane.showMessageDialog(this, sb.toString());
+                } else {
+                    String url = "insert into CauHoiTN values (?,?,?,?,?,?,?,?,?,?)";
+                    pst = con.prepareStatement(url);
+                    pst.setString(1, txtIDQuestion.getText());
+                    pst.setString(2, txtQuestion.getText());
+                    pst.setString(3, txtOption1.getText());
+                    pst.setString(4, txtOption2.getText());
+                    pst.setString(5, txtOption3.getText());
+                    pst.setString(6, txtOption4.getText());
+                    pst.setBytes(7, img_DATA);
+                    pst.setString(8, txtAnswer.getText());
+                    pst.setString(9, cbbTopic.getSelectedItem().toString());
+                    pst.setString(10, cbbMaTV.getSelectedItem().toString());
+                    pst.executeUpdate();
+                    load_dataCHTN();
+                    dataEnabledButton();
+                    reset();
+                    flag++;
+                    JOptionPane.showMessageDialog(null, "Lưu dữ liệu thành công.");
+                }
+            }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e);
         }
-
-        dataEnabledButton();
-        reset();
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-        try {
-            pst = con.prepareStatement("Update CauHoiTN set CauHoi=?,DapAnA=?,DapAnB=?,DapAnC=?,DapAnD=?,HinhAnh=?,CauTraLoi=?,TenChuDe=?, MaTV=? where MaCHTN=?");
-            pst.setString(10, txtIDQuestion.getText());
-            pst.setString(1, txtQuestion.getText());
-            pst.setString(2, txtOption1.getText());
-            pst.setString(3, txtOption2.getText());
-            pst.setString(4, txtOption3.getText());
-            pst.setString(5, txtOption4.getText());
-            pst.setBytes(6, img_DATA);
-            pst.setString(7, txtAnswer.getText());
-            pst.setString(8, cbbTopic.getSelectedItem().toString());
-            pst.setString(9, cbbMaTV.getSelectedItem().toString());
-            pst.executeUpdate();
-            load_dataCHTN();
-            JOptionPane.showMessageDialog(this, "Cập nhật thành công.");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, e);
+        if (txtIDQuestion.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Chọn mã cần sửa nội dung!");
+        } else {
+            try {
+                pst = con.prepareStatement("Update CauHoiTN set CauHoi=?,DapAnA=?,DapAnB=?,DapAnC=?,DapAnD=?,HinhAnh=?,CauTraLoi=?,TenChuDe=?, MaTV=? where MaCHTN=?");
+                pst.setString(10, txtIDQuestion.getText());
+                pst.setString(1, txtQuestion.getText());
+                pst.setString(2, txtOption1.getText());
+                pst.setString(3, txtOption2.getText());
+                pst.setString(4, txtOption3.getText());
+                pst.setString(5, txtOption4.getText());
+                pst.setBytes(6, img_DATA);
+                pst.setString(7, txtAnswer.getText());
+                pst.setString(8, cbbTopic.getSelectedItem().toString());
+                pst.setString(9, cbbMaTV.getSelectedItem().toString());
+                pst.executeUpdate();
+                load_dataCHTN();
+                dataEnabledButton();
+                reset();
+                JOptionPane.showMessageDialog(this, "Cập nhật thành công.");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, e);
+            }
         }
-
-        dataEnabledButton();
-        reset();
     }//GEN-LAST:event_btnEditActionPerformed
 
     private void btnChooseImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChooseImageActionPerformed
@@ -618,55 +650,28 @@ public class addQTN extends javax.swing.JPanel {
     }//GEN-LAST:event_txtSearchKeyReleased
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        try {
-            pst = con.prepareStatement("Delete CauHoiTN where MaCHTN=?");
-            pst.setString(1, tblListQuestion.getValueAt(tblListQuestion.getSelectedRow(), 0).toString());
-            if (JOptionPane.showConfirmDialog(this, "Bạn có muốn xóa?", "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                pst.executeUpdate();
-                DefaultTableModel model = (DefaultTableModel) tblListQuestion.getModel();
-                model.setRowCount(0);
-                load_dataCHTN();
-                JOptionPane.showMessageDialog(this, "Xóa thành công");
+        if (txtIDQuestion.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Nhập mã câu hỏi trắc nghiệm cần xóa!");
+        } else {
+            try {
+                pst = con.prepareStatement("Delete CauHoiTN where MaCHTN=?");
+                pst.setString(1, tblListQuestion.getValueAt(tblListQuestion.getSelectedRow(), 0).toString());
+                if (JOptionPane.showConfirmDialog(this, "Bạn có muốn xóa?", "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    pst.executeUpdate();
+                    load_dataCHTN();
+                    dataEnabledButton();
+                    reset();
+                    flag--;
+                    JOptionPane.showMessageDialog(this, "Xóa thành công");
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, e);
             }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, e);
         }
-
-        dataEnabledButton();
-        reset();
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void cbbMaTVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbbMaTVActionPerformed
-//        int Flag = 0;
-//        try {
-//            pst = con.prepareStatement("SELECT * FROM CauHoiTN WHERE MaTV=?");
-//            pst.setString(1, cbbMaTV.getSelectedItem().toString());
-//            rs = pst.executeQuery();
-//            if (cbbTopic.isShowing() && Flag > 0) {
-//                cbbTopic.removeItem(1);
-//            }
-//            while (rs.next()) {
-//                txtIDQuestion.setText(rs.getString("MaCHTN"));
-//                txtQuestion.setText(rs.getString("CauHoi"));
-//                byte[] img = rs.getBytes("HinhAnh");
-//                //cbbTopic.addItem(rs.getString("TenChuDe"));
-//                txtOption1.setText(rs.getString("DapAnA"));
-//                txtOption2.setText(rs.getString("DapAnB"));
-//                txtOption3.setText(rs.getString("DapAnC"));
-//                txtOption4.setText(rs.getString("DapAnD"));
-//                txtAnswer.setText(rs.getString("CauTraLoi"));
-//                cbbTopic.setSelectedItem(rs.getString("TenChuDe"));
-//                ImageIcon imgIcon = new ImageIcon(new ImageIcon(img).getImage().getScaledInstance(lblImg.getWidth(), lblImg.getHeight(), Image.SCALE_SMOOTH));
-//                lblImg.setIcon(imgIcon);
-//                img_DATA = img;
-//                Flag += 1;
-//            }
-//        } catch (Exception e) {
-//            JOptionPane.showMessageDialog(this, e);
-//        }
-    }//GEN-LAST:event_cbbMaTVActionPerformed
-
-    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        txtSearch.setText("");
         try {
             pst = con.prepareStatement("SELECT * FROM CauHoiTN WHERE MaTV=?");
             pst.setString(1, cbbMaTV.getSelectedItem().toString());
@@ -674,11 +679,65 @@ public class addQTN extends javax.swing.JPanel {
             if (rs.next()) {
                 txtIDQuestion.setText(rs.getString("MaCHTN"));
                 txtQuestion.setText(rs.getString("CauHoi"));
-                String topic = rs.getString("TenChuDe");
-                cbbTopic.addItem(topic);
+                byte[] img = rs.getBytes("HinhAnh");
+                cbbTopic.setSelectedItem(rs.getString("TenChuDe"));
+                txtOption1.setText(rs.getString("DapAnA"));
+                txtOption2.setText(rs.getString("DapAnB"));
+                txtOption3.setText(rs.getString("DapAnC"));
+                txtOption4.setText(rs.getString("DapAnD"));
                 txtAnswer.setText(rs.getString("CauTraLoi"));
+                cbbTopic.setSelectedItem(rs.getString("TenChuDe"));
+                ImageIcon imgIcon = new ImageIcon(new ImageIcon(img).getImage().getScaledInstance(lblImg.getWidth(), lblImg.getHeight(), Image.SCALE_SMOOTH));
+                lblImg.setIcon(imgIcon);
+                img_DATA = img;
+            } else {
+                txtIDQuestion.setText("");
+                txtQuestion.setText("");
+                txtOption1.setText("");
+                txtOption2.setText("");
+                txtOption3.setText("");
+                txtOption4.setText("");
+                pst = con.prepareStatement("SELECT * FROM TuVung WHERE MaTV=?");
+                pst.setString(1, cbbMaTV.getSelectedItem().toString());
+                rs = pst.executeQuery();
+                if (rs.next()) {
+                    byte[] img = rs.getBytes("HinhAnh");
+                    txtAnswer.setText(rs.getString("TuVung"));
+                    cbbTopic.setSelectedItem(rs.getString("TenChuDe"));
+                    ImageIcon imgIcon = new ImageIcon(new ImageIcon(img).getImage().getScaledInstance(lblImg.getWidth(), lblImg.getHeight(), Image.SCALE_SMOOTH));
+                    lblImg.setIcon(imgIcon);
+                    img_DATA = img;
+                }
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }//GEN-LAST:event_cbbMaTVActionPerformed
+
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        dataNotEnabledButton();
+        try {
+            pst = con.prepareStatement("SELECT * FROM CauHoiTN WHERE MaCHTN=?");
+            pst.setString(1, txtSearch.getText());
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                txtIDQuestion.setText(rs.getString("MaCHTN"));
+                txtQuestion.setText(rs.getString("CauHoi"));
+                txtOption1.setText(rs.getString("DapAnA"));
+                txtOption2.setText(rs.getString("DapAnB"));
+                txtOption3.setText(rs.getString("DapAnC"));
+                txtOption4.setText(rs.getString("DapAnD"));
+                byte[] img = rs.getBytes("HinhAnh");
+                txtAnswer.setText(rs.getString("CauTraLoi"));
+                cbbTopic.setSelectedItem(rs.getString("TenChuDe"));
+                cbbMaTV.setSelectedItem(rs.getString("MaTV"));
+                
+                ImageIcon imgIcon = new ImageIcon(new ImageIcon(img).getImage().getScaledInstance(lblImg.getWidth(), lblImg.getHeight(), Image.SCALE_SMOOTH));
+                lblImg.setIcon(imgIcon);
+                img_DATA = img;
             } else {
                 JOptionPane.showMessageDialog(this, "KHÔNG TÌM THẤY!");
+                dataEnabledButton();
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e);
@@ -735,6 +794,94 @@ public class addQTN extends javax.swing.JPanel {
         dataNotEnabledButton();
     }//GEN-LAST:event_tblListQuestionMouseClicked
 
+    private void btnTaoMaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTaoMaActionPerformed
+        SinhMaBKT();
+    }//GEN-LAST:event_btnTaoMaActionPerformed
+
+    //Đếm số lượng dòng bài kiểm tra
+    public void getSumRow() {
+        try {
+            pst = con.prepareStatement("Select * from CauHoiTN");
+            rs = pst.executeQuery();
+
+            while (rs.next()) {
+                flag++;
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi tải dữ liệu mã câu hỏi trắc nghiệm!");
+        }
+    }
+
+    //Sinh mã bài kiểm tra
+    public void SinhMaBKT() {
+        try {
+            pst = con.prepareStatement("Select * from CauHoiTN");
+            rs = pst.executeQuery();
+
+            int i = 1;
+            while (rs.next()) {
+                String checkMaBKT = rs.getString("MaCHTN");
+
+                String temp = "";
+                if (i < 10) {
+                    temp = "TN00" + i;
+                } else {
+                    temp = "TN0" + i;
+                }
+
+                if (i < flag - 1 && !checkMaBKT.trim().equals(temp)) {
+                    if (i < 10) {
+                        MaCHTN = "TN00" + i;
+                    } else {
+                        MaCHTN = "TN0" + i;
+                    }
+                    break;
+                }
+                i += 1;
+                if (i == flag) {
+                    if (i < 10) {
+                        MaCHTN = "TN00" + i;
+                    } else {
+                        MaCHTN = "TN0" + i;
+                    }
+                }
+            }
+//            if (MaBKT.isEmpty()) {
+//                MaBKT = "BKT0" + 1;
+//            }
+            txtIDQuestion.setText(MaCHTN);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi tải dữ liệu MaCHTN!");
+        }
+    }
+
+    private void hopleMaCHTN(StringBuilder sb) {
+        try {
+            String check_url = "Select * from CauHoiTN where MaCHTN = '" + txtIDQuestion.getText() + "'";
+            st = con.createStatement();
+            rs = st.executeQuery(check_url);
+
+            //Kiểm tra trùng id
+            if (rs.next()) {
+                sb.append("Mã câu hỏi trắc nghiệm này đã tồn tại!\n");
+                txtIDQuestion.setBackground(Color.green);
+            } else {
+                String MaCHTN = txtIDQuestion.getText().trim();
+                //Mã ND phải gồm EFK và 3 chữ số
+                String regex = "TN\\d{3}";
+                Pattern pattern = Pattern.compile(regex);
+                Matcher matcher = pattern.matcher(MaCHTN);
+                if (!matcher.find()) {
+                    sb.append("Mã câu hỏi trắc nghiệm sai định dạng, Mã câu hỏi trắc nghiệm phải gồm TN và 3 chữ số, VD: TN001\n");
+                    txtIDQuestion.setBackground(Color.green);
+                } else {
+                    txtIDQuestion.setBackground(Color.white);
+                }
+            }
+        } catch (Exception e) {
+        }
+    }
+
     public void dataEnabledButton() {
         btnAdd.setEnabled(true);
         btnSave.setEnabled(false);
@@ -752,6 +899,7 @@ public class addQTN extends javax.swing.JPanel {
         txtOption4.setEnabled(false);
         txtAnswer.setEnabled(false);
         lblImg.setEnabled(false);
+        btnTaoMa.setEnabled(false);
     }
 
     public void dataNotEnabledButton() {
@@ -771,11 +919,12 @@ public class addQTN extends javax.swing.JPanel {
         txtOption4.setEnabled(true);
         txtAnswer.setEnabled(true);
         lblImg.setEnabled(true);
+        btnTaoMa.setEnabled(true);
     }
 
     public void reset() {
         txtIDQuestion.setText("");
-        cbbMaTV.setSelectedIndex(-1);
+        cbbMaTV.setSelectedIndex(0);
         cbbTopic.setSelectedIndex(-1);
         txtAnswer.setText("");
         txtOption1.setText("");
@@ -784,6 +933,9 @@ public class addQTN extends javax.swing.JPanel {
         txtOption4.setText("");
         lblImg.setIcon(null);
         txtQuestion.setText("");
+        txtSearch.setText("");
+        
+        txtIDQuestion.setBackground(Color.white);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -797,6 +949,7 @@ public class addQTN extends javax.swing.JPanel {
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSearch;
+    private javax.swing.JButton btnTaoMa;
     private javax.swing.JComboBox<String> cbbMaTV;
     private javax.swing.JComboBox<String> cbbTopic;
     private javax.swing.JLabel jLabel1;

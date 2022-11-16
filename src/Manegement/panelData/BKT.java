@@ -17,6 +17,8 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
@@ -49,11 +51,15 @@ public class BKT extends javax.swing.JPanel {
     String fPath = null;
     byte[] img_DATA;
 
+    String MaBKT = "";
+    int flag = 1;
+
     private DefaultListModel mode;
 
     public BKT() {
         initComponents();
         dataEnabledButton(); //ẩn các nút
+        loadDataCBBMaBKT();
         loadDataCBBMaND(); //lấy mã người dùng trong sql
         loadDataCBBLevel(); //lấy tên cấp độ trong sql
         loadDataCBBTopic(); //lấy tên chủ đề trong sql
@@ -76,14 +82,13 @@ public class BKT extends javax.swing.JPanel {
 
     public void load_dataClass() {
         try {
-            String url = "SELECT MaBKT, MaND, TenCapDo, TenChuDe, Diem, NgayKiem = CONVERT(varchar, NgayKiem, 103)\n"
-                    + "FROM BaiKiemTra";
+            String url = "SELECT * FROM BaiKiemTra";
             st = con.createStatement();
             rs = st.executeQuery(url);
             list.clear();
             listBKT data;
             while (rs.next()) {
-                data = new listBKT(rs.getString("MaBKT"), rs.getString("MaND"), rs.getString("TenCapDo"), rs.getString("TenChuDe"), rs.getFloat("Diem"), rs.getString("NgayKiem"));
+                data = new listBKT(rs.getString("MaBKT"), rs.getString("MaND"), rs.getString("TenCapDo"), rs.getString("TenChuDe"), rs.getString("HinhThuc"), rs.getFloat("Diem"), rs.getString("NgayKiem"));
                 list.add(data);
             }
         } catch (Exception e) {
@@ -95,7 +100,7 @@ public class BKT extends javax.swing.JPanel {
         tbn = (DefaultTableModel) tblBKT.getModel();
         tbn.setRowCount(0);
         for (listBKT i : list) {
-            tbn.addRow(new Object[]{i.getMaBKT(), i.getMaND(), i.getTenCapDo(), i.getTenChuDe(), i.getDiem(), i.getNgayKiem()});
+            tbn.addRow(new Object[]{i.getMaBKT(), i.getMaND(), i.getTenCapDo(), i.getTenChuDe(), i.getHinhThuc(), i.getDiem(), i.getNgayKiem()});
         }
         JTableHeader Theader = tblBKT.getTableHeader();
 
@@ -103,12 +108,25 @@ public class BKT extends javax.swing.JPanel {
         Theader.setForeground(Color.black);
 
         Theader.setFont(new Font("Roboto", Font.BOLD, 17));
-        Theader.setForeground(Color.white);
         ((DefaultTableCellRenderer) Theader.getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
 
         tblBKT.setFont(new Font("Roboto", Font.PLAIN, 17));
         tblBKT.setSelectionBackground(new Color(59, 89, 152));
         tblBKT.setSelectionForeground(Color.white);
+    }
+
+    public void loadDataCBBMaBKT() {
+        try {
+            pst = con.prepareStatement("Select * from BaiKiemTra");
+            rs = pst.executeQuery();
+
+            while (rs.next()) {
+                cbbSearchID.addItem(rs.getString("MaBKT"));
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi tải dữ liệu MaND!");
+        }
     }
 
     public void loadDataCBBMaND() {
@@ -156,7 +174,6 @@ public class BKT extends javax.swing.JPanel {
             while (rs.next()) {
                 cbbTenChuDe.addItem(rs.getString("TenChuDe"));
             }
-
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Lỗi tải dữ liệu TenChuDe!");
         }
@@ -176,6 +193,7 @@ public class BKT extends javax.swing.JPanel {
         btnSearch = new javax.swing.JButton();
         txtSearch = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
+        cbbSearchID = new javax.swing.JComboBox<>();
         jLabel7 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         Main = new javax.swing.JPanel();
@@ -190,12 +208,15 @@ public class BKT extends javax.swing.JPanel {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
         txtMaBKT = new javax.swing.JTextField();
         cbbMaND = new javax.swing.JComboBox<>();
         cbbTenCapDo = new javax.swing.JComboBox<>();
         cbbTenChuDe = new javax.swing.JComboBox<>();
         txtDiem = new javax.swing.JTextField();
         txtDate = new com.toedter.calendar.JDateChooser();
+        cbbHinhThuc = new javax.swing.JComboBox<>();
+        btnTaoMa = new javax.swing.JButton();
         RightLast = new javax.swing.JPanel();
         btnAdd = new javax.swing.JButton();
         btnSave = new javax.swing.JButton();
@@ -205,7 +226,7 @@ public class BKT extends javax.swing.JPanel {
 
         setBackground(new java.awt.Color(204, 216, 224));
         setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED, java.awt.Color.lightGray, java.awt.Color.lightGray));
-        setPreferredSize(new java.awt.Dimension(1392, 812));
+        setPreferredSize(new java.awt.Dimension(1400, 880));
         setLayout(new java.awt.BorderLayout());
 
         Hearder.setBackground(new java.awt.Color(255, 255, 255));
@@ -237,12 +258,24 @@ public class BKT extends javax.swing.JPanel {
         jLabel8.setText("Tìm kiếm");
         jLabel8.setPreferredSize(new java.awt.Dimension(120, 35));
 
+        cbbSearchID.setEditable(true);
+        cbbSearchID.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        cbbSearchID.setMaximumRowCount(5);
+        cbbSearchID.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "---Chọn MaBKT---" }));
+        cbbSearchID.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbbSearchIDActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
-                .addGap(970, 970, 970)
+                .addGap(752, 752, 752)
+                .addComponent(cbbSearchID, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -253,7 +286,9 @@ public class BKT extends javax.swing.JPanel {
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
-                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbbSearchID, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -262,7 +297,7 @@ public class BKT extends javax.swing.JPanel {
                 .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        Hearder.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 100, 1388, -1));
+        Hearder.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 100, 1396, -1));
 
         jLabel7.setBackground(new java.awt.Color(255, 255, 255));
         jLabel7.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
@@ -270,7 +305,7 @@ public class BKT extends javax.swing.JPanel {
         jLabel7.setText("DỮ LIỆU BÀI KIỂM TRA");
         jLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
         jLabel7.setPreferredSize(new java.awt.Dimension(250, 50));
-        Hearder.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1388, 100));
+        Hearder.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1396, 100));
 
         jSeparator1.setBackground(new java.awt.Color(0, 120, 255));
         jSeparator1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -293,23 +328,23 @@ public class BKT extends javax.swing.JPanel {
         tblBKT.setForeground(new java.awt.Color(0, 0, 0));
         tblBKT.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "MÃ BKT", "MÃ ND", "TÊN CẤP ĐỘ", "TÊN CHỦ ĐỀ", "ĐIỂM", "NGÀY KIỂM"
+                "MÃ BKT", "MÃ ND", "TÊN CẤP ĐỘ", "TÊN CHỦ ĐỀ", "HÌNH THỨC", "ĐIỂM", "NGÀY KIỂM"
             }
         ));
         tblBKT.setGridColor(new java.awt.Color(0, 0, 0));
@@ -361,6 +396,10 @@ public class BKT extends javax.swing.JPanel {
         jLabel6.setFont(new java.awt.Font("Verdana", 1, 16)); // NOI18N
         jLabel6.setText("Ngày KT");
 
+        jLabel9.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel9.setFont(new java.awt.Font("Verdana", 1, 16)); // NOI18N
+        jLabel9.setText("Hình thức");
+
         txtMaBKT.setFont(new java.awt.Font("Dialog", 0, 16)); // NOI18N
         txtMaBKT.setPreferredSize(new java.awt.Dimension(300, 35));
 
@@ -376,7 +415,20 @@ public class BKT extends javax.swing.JPanel {
         txtDiem.setFont(new java.awt.Font("Dialog", 0, 16)); // NOI18N
         txtDiem.setPreferredSize(new java.awt.Dimension(300, 35));
 
+        txtDate.setFont(new java.awt.Font("Dialog", 0, 16)); // NOI18N
         txtDate.setPreferredSize(new java.awt.Dimension(300, 35));
+
+        cbbHinhThuc.setFont(new java.awt.Font("Dialog", 0, 16)); // NOI18N
+        cbbHinhThuc.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "--- Lựa chọn hình thức kiểm tra ---", "Trắc nghiệm", "Điền từ" }));
+        cbbHinhThuc.setPreferredSize(new java.awt.Dimension(300, 35));
+
+        btnTaoMa.setFont(new java.awt.Font("Dialog", 0, 16)); // NOI18N
+        btnTaoMa.setText("Tạo mã");
+        btnTaoMa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTaoMaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout RightTopLayout = new javax.swing.GroupLayout(RightTop);
         RightTop.setLayout(RightTopLayout);
@@ -390,7 +442,8 @@ public class BKT extends javax.swing.JPanel {
                     .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
                     .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE))
+                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(RightTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(cbbTenChuDe, 0, 312, Short.MAX_VALUE)
@@ -398,16 +451,22 @@ public class BKT extends javax.swing.JPanel {
                     .addComponent(txtDiem, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
                     .addComponent(txtDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(cbbMaND, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtMaBKT, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(cbbHinhThuc, 0, 312, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, RightTopLayout.createSequentialGroup()
+                        .addComponent(txtMaBKT, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnTaoMa)))
+                .addContainerGap(76, Short.MAX_VALUE))
         );
         RightTopLayout.setVerticalGroup(
             RightTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(RightTopLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
+                .addGap(19, 19, 19)
                 .addGroup(RightTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtMaBKT, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(RightTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtMaBKT, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnTaoMa, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(RightTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -422,13 +481,17 @@ public class BKT extends javax.swing.JPanel {
                     .addComponent(cbbTenChuDe, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(RightTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbbHinhThuc, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(RightTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtDiem, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(RightTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtDate, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(61, Short.MAX_VALUE))
         );
 
         Right.add(RightTop, java.awt.BorderLayout.CENTER);
@@ -488,7 +551,7 @@ public class BKT extends javax.swing.JPanel {
         RightLast.add(btnDelete);
 
         btnReset.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        btnReset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/9855519_reset_reload_sync_update_icon.png"))); // NOI18N
+        btnReset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/8542647_undo_back_icon.png"))); // NOI18N
         btnReset.setText("LÀM MỚI");
         btnReset.setOpaque(true);
         btnReset.setPreferredSize(new java.awt.Dimension(150, 40));
@@ -513,24 +576,37 @@ public class BKT extends javax.swing.JPanel {
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        StringBuilder sb = new StringBuilder();
         try {
-            String url = "insert into BaiKiemTra values (?,?,?,?,?,?)";
-            pst = con.prepareStatement(url);
-            pst.setString(1, txtMaBKT.getText());
-            pst.setString(2, cbbMaND.getSelectedItem().toString());
-            pst.setString(3, cbbTenCapDo.getSelectedItem().toString());
-            pst.setString(4, cbbTenChuDe.getSelectedItem().toString());
-            pst.setString(5, txtDiem.getText());
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-            String date = sdf.format(txtDate.getDate());
-            pst.setString(6, date);
-            pst.executeUpdate();
-            load_dataClass();
-            load_dataBKT();
-            JOptionPane.showMessageDialog(null, "Lưu dữ liệu thành công.");
-            btnAdd.setEnabled(true);
-            dataEnabledButton();
-            reset();
+            if (txtMaBKT.getText().equals("")) {
+                JOptionPane.showMessageDialog(this, "Nhập mã bài kiểm muốn xóa!");
+                txtMaBKT.requestFocus();
+                return;
+            } else {
+                hopleMaBKT(sb);
+                if (sb.length() > 0) {
+                    JOptionPane.showMessageDialog(this, sb.toString());
+                } else {
+                    String url = "insert into BaiKiemTra values (?,?,?,?,?,?,?)";
+                    pst = con.prepareStatement(url);
+                    pst.setString(1, txtMaBKT.getText());
+                    pst.setString(2, cbbMaND.getSelectedItem().toString());
+                    pst.setString(3, cbbTenCapDo.getSelectedItem().toString());
+                    pst.setString(4, cbbTenChuDe.getSelectedItem().toString());
+                    pst.setString(5, cbbHinhThuc.getSelectedItem().toString());
+                    pst.setString(6, txtDiem.getText());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    String date = sdf.format(txtDate.getDate());
+                    pst.setString(7, date);
+                    pst.executeUpdate();
+                    load_dataClass();
+                    load_dataBKT();
+                    JOptionPane.showMessageDialog(null, "Lưu dữ liệu thành công.");
+                    btnAdd.setEnabled(true);
+                    dataEnabledButton();
+                    reset();
+                }
+            }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
@@ -541,53 +617,53 @@ public class BKT extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Nhập mã bài kiểm muốn xóa!");
             txtMaBKT.requestFocus();
             return;
-        }
-        try {
-            int row = 0;
-            pst = con.prepareStatement("Delete from BaiKiemTra where MaBKT=?");
-            pst.setString(1, txtMaBKT.getText());
-            if (JOptionPane.showConfirmDialog(this, "Bạn có muốn xóa?", "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                pst.executeUpdate();
-                if (row > 0) {
+        } else {
+            try {
+                int row = 0;
+                pst = con.prepareStatement("Delete from BaiKiemTra where MaBKT=?");
+                pst.setString(1, txtMaBKT.getText());
+                if (JOptionPane.showConfirmDialog(this, "Bạn có muốn xóa?", "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    pst.executeUpdate();
                     JOptionPane.showMessageDialog(this, "Xóa thành công");
-                } else {
-                    JOptionPane.showMessageDialog(this, "Xóa thất bại");
                 }
+                btnAdd.setEnabled(true);
+                load_dataClass();
+                load_dataBKT();
+                dataEnabledButton();
+                reset();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Xóa thất bại");
+                System.out.print(e.toString());
             }
-            btnAdd.setEnabled(true);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Lỗi");
-            System.out.print(e.toString());
         }
-
-        load_dataClass();
-        load_dataBKT();
-        dataEnabledButton();
-        reset();
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-        try {
-            pst = con.prepareStatement("Update BaiKiemTra set MaND=?,TenCapDo=?,TenChuDe=?,Diem=?, NgayKiem=? where MaBKT=?");
-            pst.setString(6, txtMaBKT.getText());
-            pst.setString(1, cbbMaND.getSelectedItem().toString());
-            pst.setString(2, cbbTenCapDo.getSelectedItem().toString());
-            pst.setString(3, cbbTenChuDe.getSelectedItem().toString());
-            pst.setString(4, txtDiem.getText());
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-            String date = sdf.format(txtDate.getDate());
-            pst.setString(5, date);
-            pst.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Cập nhật thành công.");
-            btnAdd.setEnabled(true);
-        } catch (Exception e) {
-            System.out.println(e.toString());
+        if (txtMaBKT.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Chọn mã bài kiểm tra cần sửa nội dung");
+        } else {
+            try {
+                pst = con.prepareStatement("Update BaiKiemTra set MaND=?,TenCapDo=?,TenChuDe=?,HinhThuc=?,Diem=?, NgayKiem=? where MaBKT=?");
+                pst.setString(7, txtMaBKT.getText());
+                pst.setString(1, cbbMaND.getSelectedItem().toString());
+                pst.setString(2, cbbTenCapDo.getSelectedItem().toString());
+                pst.setString(3, cbbTenChuDe.getSelectedItem().toString());
+                pst.setString(4, cbbHinhThuc.getSelectedItem().toString());
+                pst.setString(5, txtDiem.getText());
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                String date = sdf.format(txtDate.getDate());
+                pst.setString(6, date);
+                pst.executeUpdate();
+                load_dataClass();
+                load_dataBKT();
+                dataEnabledButton();
+                reset();
+                JOptionPane.showMessageDialog(this, "Cập nhật thành công.");
+                btnAdd.setEnabled(true);
+            } catch (Exception e) {
+                System.out.println(e.toString());
+            }
         }
-
-        load_dataClass();
-        load_dataBKT();
-        dataEnabledButton();
-        reset();
     }//GEN-LAST:event_btnEditActionPerformed
 
     private void txtSearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyReleased
@@ -598,21 +674,31 @@ public class BKT extends javax.swing.JPanel {
     }//GEN-LAST:event_txtSearchKeyReleased
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        dataNotEnabledButton();
         try {
-            pst = con.prepareStatement("Select * from BaiKiemTra where MaBKT=?");
+            pst = con.prepareStatement("SELECT * FROM BaiKiemTra WHERE MaBKT=?");
             pst.setString(1, txtSearch.getText());
             rs = pst.executeQuery();
-            while (rs.next()) {
+            if (rs.next()) {
                 txtMaBKT.setText(rs.getString("MaBKT"));
                 cbbMaND.setSelectedItem(rs.getString("MaND"));
                 cbbTenCapDo.setSelectedItem(rs.getString("TenCapDo"));
                 cbbTenChuDe.setSelectedItem(rs.getString("TenChuDe"));
+                cbbHinhThuc.setSelectedItem(rs.getString("HinhThuc"));
                 txtDiem.setText(rs.getString("Diem"));
+                try {
+                    int srow = tblBKT.getSelectedRow();
+                    Date date = new SimpleDateFormat("yyyy-MM-dd").parse((rs.getString("NgayKiem")));
+                    txtDate.setDate(date);
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, e);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "KHÔNG TÌM THẤY!");
+                dataEnabledButton();
             }
-            btnAdd.setEnabled(false);
-            dataNotEnabledButton();
         } catch (Exception e) {
-            System.out.println(e.toString());
+            JOptionPane.showMessageDialog(this, e);
         }
     }//GEN-LAST:event_btnSearchActionPerformed
 
@@ -627,6 +713,38 @@ public class BKT extends javax.swing.JPanel {
         reset();
     }//GEN-LAST:event_btnResetActionPerformed
 
+    private void btnTaoMaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTaoMaActionPerformed
+        getSumRow();
+        SinhMaBKT();
+    }//GEN-LAST:event_btnTaoMaActionPerformed
+
+    private void cbbSearchIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbbSearchIDActionPerformed
+        dataNotEnabledButton();
+        txtSearch.setText("");
+        try {
+            pst = con.prepareStatement("Select * from BaiKiemTra where MaBKT=?");
+            pst.setString(1, cbbSearchID.getSelectedItem().toString());
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                txtMaBKT.setText(rs.getString("MaBKT"));
+                cbbMaND.setSelectedItem(rs.getString("MaND"));
+                cbbTenCapDo.setSelectedItem(rs.getString("TenCapDo"));
+                cbbTenChuDe.setSelectedItem(rs.getString("TenChuDe"));
+                cbbHinhThuc.setSelectedItem(rs.getString("HinhThuc"));
+                txtDiem.setText(rs.getString("Diem"));
+                try {
+                    int srow = tblBKT.getSelectedRow();
+                    Date date = new SimpleDateFormat("yyyy-MM-dd").parse((rs.getString("NgayKiem")));
+                    txtDate.setDate(date);
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, e);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+    }//GEN-LAST:event_cbbSearchIDActionPerformed
+
     public void show_frame(int current) {
         listBKT p = list.get(current);
 
@@ -634,14 +752,99 @@ public class BKT extends javax.swing.JPanel {
         cbbMaND.setSelectedItem(p.getMaND());
         cbbTenCapDo.setSelectedItem(p.getTenCapDo());
         cbbTenChuDe.setSelectedItem(p.getTenChuDe());
+        cbbHinhThuc.setSelectedItem(p.getHinhThuc());
         String point = Float.toString(p.getDiem());
         txtDiem.setText(point);
         try {
             int srow = tblBKT.getSelectedRow();
-            Date date = new SimpleDateFormat("dd-MM-yyyy").parse((String) p.getNgayKiem());
+            Date date = new SimpleDateFormat("yyyy-MM-dd").parse((String) p.getNgayKiem());
             txtDate.setDate(date);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+    //Đếm số lượng dòng bài kiểm tra
+    public void getSumRow() {
+        try {
+            pst = con.prepareStatement("Select * from BaiKiemTra");
+            rs = pst.executeQuery();
+            flag = 1;
+            while (rs.next()) {
+                flag++;
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi tải dữ liệu MaBKT!");
+        }
+    }
+
+    //Sinh mã bài kiểm tra
+    public void SinhMaBKT() {
+        try {
+            pst = con.prepareStatement("Select * from BaiKiemTra");
+            rs = pst.executeQuery();
+
+            int i = 1;
+            int a = flag;
+            while (rs.next()) {
+                String checkMaBKT = rs.getString("MaBKT").trim();
+
+                String temp = "";
+                if (i < 10) {
+                    temp = "BKT0" + i;
+                } else {
+                    temp = "BKT" + i;
+                }
+                if (i < flag && !temp.equals(checkMaBKT)) {
+                    if (i < 10) {
+                        MaBKT = "BKT0" + i;
+                    } else {
+                        MaBKT = "BKT" + i;
+                    }
+                    break;
+                }
+                i += 1;
+                if (i == flag) {
+                    if (i < 10) {
+                        MaBKT = "BKT0" + i;
+                    } else {
+                        MaBKT = "BKT" + i;
+                    }
+                }
+            }
+            if (MaBKT.isEmpty()) {
+                MaBKT = "BKT0" + 1;
+            }
+            txtMaBKT.setText(MaBKT);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi tải dữ liệu MaBKT!");
+        }
+    }
+
+    private void hopleMaBKT(StringBuilder sb) {
+        try {
+            String check_url = "Select * from BaiKiemTra where MaBKT = '" + txtMaBKT.getText() + "'";
+            st = con.createStatement();
+            rs = st.executeQuery(check_url);
+
+            //Kiểm tra trùng id
+            if (rs.next()) {
+                sb.append("Mã bài kiểm tra này đã tồn tại!\n");
+                txtMaBKT.setBackground(Color.green);
+            } else {
+                String MaCHDT = txtMaBKT.getText().trim();
+                //Mã ND phải gồm EFK và 3 chữ số
+                String regex = "BKT\\d{2}";
+                Pattern pattern = Pattern.compile(regex);
+                Matcher matcher = pattern.matcher(MaCHDT);
+                if (!matcher.find()) {
+                    sb.append("Mã bài kiểm tra sai định dạng, Mã bài kiểm tra phải gồm BTK và 2 chữ số, VD: BKT01\n");
+                    txtMaBKT.setBackground(Color.green);
+                } else {
+                    txtMaBKT.setBackground(Color.white);
+                }
+            }
+        } catch (Exception e) {
         }
     }
 
@@ -655,8 +858,10 @@ public class BKT extends javax.swing.JPanel {
         cbbMaND.setEnabled(false);
         cbbTenCapDo.setEnabled(false);
         cbbTenChuDe.setEnabled(false);
+        cbbHinhThuc.setEnabled(false);
         txtDiem.setEnabled(false);
         txtDate.setEnabled(false);
+        btnTaoMa.setEnabled(false);
     }
 
     public void dataNotEnabledButton() {
@@ -669,8 +874,10 @@ public class BKT extends javax.swing.JPanel {
         cbbMaND.setEnabled(true);
         cbbTenCapDo.setEnabled(true);
         cbbTenChuDe.setEnabled(true);
+        cbbHinhThuc.setEnabled(true);
         txtDiem.setEnabled(true);
         txtDate.setEnabled(true);
+        btnTaoMa.setEnabled(true);
     }
 
     public void reset() {
@@ -678,8 +885,12 @@ public class BKT extends javax.swing.JPanel {
         cbbMaND.setSelectedItem(0);
         cbbTenCapDo.setSelectedItem(0);
         cbbTenChuDe.setSelectedItem(0);
+        cbbHinhThuc.setSelectedItem(-1);
         txtDiem.setText("");
         txtDate.setDate(null);
+        txtSearch.setText("");
+
+        txtMaBKT.setBackground(Color.white);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -695,7 +906,10 @@ public class BKT extends javax.swing.JPanel {
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSearch;
+    private javax.swing.JButton btnTaoMa;
+    private javax.swing.JComboBox<String> cbbHinhThuc;
     private javax.swing.JComboBox<String> cbbMaND;
+    private javax.swing.JComboBox<String> cbbSearchID;
     private javax.swing.JComboBox<String> cbbTenCapDo;
     private javax.swing.JComboBox<String> cbbTenChuDe;
     private javax.swing.JLabel jLabel1;
@@ -706,6 +920,7 @@ public class BKT extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;

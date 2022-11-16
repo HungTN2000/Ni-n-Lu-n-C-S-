@@ -17,6 +17,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -46,8 +48,12 @@ public class addQDT extends javax.swing.JPanel {
     String fPath = null;
     byte[] img_DATA;
 
+    String MaCHDT = "";
+    int flag = 1;
+
     public addQDT() {
         initComponents();
+        getSumRow();
         load_dataCHĐT();
         //getConnection();
         loadDataCBBTopic();
@@ -109,11 +115,10 @@ public class addQDT extends javax.swing.JPanel {
         }
         JTableHeader Theader = tblListQuestion.getTableHeader();
 
-        Theader.setBackground(new Color(18, 16, 14));
+        Theader.setBackground(Color.DARK_GRAY);
         Theader.setForeground(Color.black);
 
         Theader.setFont(new Font("Roboto", Font.BOLD, 17));
-        Theader.setForeground(Color.white);
         ((DefaultTableCellRenderer) Theader.getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
 
         tblListQuestion.setFont(new Font("Roboto", Font.PLAIN, 17));
@@ -169,6 +174,7 @@ public class addQDT extends javax.swing.JPanel {
         btnDelete = new javax.swing.JButton();
         btnReset = new javax.swing.JButton();
         btnChooseImage = new javax.swing.JButton();
+        btnTaoMa = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setBorder(null);
@@ -188,8 +194,13 @@ public class addQDT extends javax.swing.JPanel {
         add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 70, 300, 5));
 
         Header.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED), javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        Header.setAutoscrolls(true);
         Header.setPreferredSize(new java.awt.Dimension(1392, 300));
         Header.setLayout(new java.awt.BorderLayout());
+
+        jScrollPane1.setBackground(new java.awt.Color(0, 153, 102));
+        jScrollPane1.setAutoscrolls(true);
+        jScrollPane1.setOpaque(true);
 
         tblListQuestion.setAutoCreateRowSorter(true);
         tblListQuestion.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEtchedBorder(), javax.swing.BorderFactory.createEtchedBorder()));
@@ -248,11 +259,10 @@ public class addQDT extends javax.swing.JPanel {
         txtAnswer.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
 
         jLabel9.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        jLabel9.setText("Topic");
+        jLabel9.setText("Tên chủ đề");
 
         cbbTopic.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         cbbTopic.setMaximumRowCount(3);
-        cbbTopic.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Choose topic" }));
 
         txtSearch.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         txtSearch.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -266,7 +276,7 @@ public class addQDT extends javax.swing.JPanel {
 
         cbbMaTV.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         cbbMaTV.setMaximumRowCount(5);
-        cbbMaTV.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Choose MaTV" }));
+        cbbMaTV.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "---- Chọn MaTV ----" }));
         cbbMaTV.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbbMaTVActionPerformed(evt);
@@ -355,29 +365,47 @@ public class addQDT extends javax.swing.JPanel {
         });
         jPanel2.add(btnChooseImage);
 
+        btnTaoMa.setFont(new java.awt.Font("Dialog", 0, 16)); // NOI18N
+        btnTaoMa.setText("Tạo mã");
+        btnTaoMa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTaoMaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout MainLayout = new javax.swing.GroupLayout(Main);
         Main.setLayout(MainLayout);
         MainLayout.setHorizontalGroup(
             MainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(MainLayout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(MainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(MainLayout.createSequentialGroup()
+                        .addGap(63, 63, 63)
+                        .addComponent(jLabel1)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, MainLayout.createSequentialGroup()
-                        .addGroup(MainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
+                        .addContainerGap(59, Short.MAX_VALUE)
                         .addGroup(MainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtIDQuestion)
-                            .addComponent(txtAnswer)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, MainLayout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(cbbTopic, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(cbbMaTV, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addComponent(jLabel1)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 444, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(MainLayout.createSequentialGroup()
+                                .addGroup(MainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(MainLayout.createSequentialGroup()
+                                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(37, 37, 37))
+                                    .addGroup(MainLayout.createSequentialGroup()
+                                        .addGroup(MainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(18, 18, 18)))
+                                .addGroup(MainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, MainLayout.createSequentialGroup()
+                                        .addComponent(txtIDQuestion)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(btnTaoMa))
+                                    .addComponent(txtAnswer, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(cbbTopic, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(cbbMaTV, 0, 250, Short.MAX_VALUE)))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 391, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(54, 54, 54)
                 .addComponent(lblImg, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(123, 123, 123)
@@ -415,7 +443,8 @@ public class addQDT extends javax.swing.JPanel {
                                 .addGap(22, 22, 22)
                                 .addGroup(MainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtIDQuestion, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(txtIDQuestion, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnTaoMa, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
                                 .addGroup(MainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(txtAnswer, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -441,61 +470,78 @@ public class addQDT extends javax.swing.JPanel {
     }//GEN-LAST:event_btnResetActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        try {
-            pst = con.prepareStatement("Delete CauHoiDT where MaCHT=DT=?");
-            pst.setString(1, tblListQuestion.getValueAt(tblListQuestion.getSelectedRow(), 0).toString());
-            if (JOptionPane.showConfirmDialog(this, "Bạn có muốn xóa?", "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                pst.executeUpdate();
-                load_dataCHĐT();
-                JOptionPane.showMessageDialog(this, "Xóa thành công");
+        if (txtIDQuestion.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Nhập mã cần xóa!");
+        } else {
+            try {
+                pst = con.prepareStatement("Delete CauHoiDT where MaCHDT=?");
+                pst.setString(1, tblListQuestion.getValueAt(tblListQuestion.getSelectedRow(), 0).toString());
+                if (JOptionPane.showConfirmDialog(this, "Bạn có muốn xóa?", "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    pst.executeUpdate();
+                    load_dataCHĐT();
+                    dataEnabledButton();
+                    reset();
+                    flag--;
+                    JOptionPane.showMessageDialog(this, "Xóa thành công");
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Xóa thất bại");
             }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Xóa thất bại");
         }
-
-        dataEnabledButton();
-        reset();
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-        try {
-            pst = con.prepareStatement("Update CauHoiDT set CauHoiDT=?, HinhAnh=?,CauTraLoi=?,TenChuDe=?,MaTV=? where MaCHDT=?");
-            pst.setString(6, txtIDQuestion.getText());
-            pst.setString(1, txtQuestion.getText());
-            pst.setBytes(2, img_DATA);
-            pst.setString(3, txtAnswer.getText());
-            pst.setString(4, cbbTopic.getSelectedItem().toString());
-            pst.setString(5, cbbMaTV.getSelectedItem().toString());
-            pst.executeUpdate();
-            load_dataCHĐT();
-            JOptionPane.showMessageDialog(this, "Cập nhật thành công.");
-        } catch (Exception e) {
-            System.out.println(e.toString());
+        if (txtIDQuestion.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Nhập mã cần sửa nội dung!");
+        } else {
+            try {
+                pst = con.prepareStatement("Update CauHoiDT set CauHoiDT=?, HinhAnh=?,CauTraLoi=?,TenChuDe=?,MaTV=? where MaCHDT=?");
+                pst.setString(6, txtIDQuestion.getText());
+                pst.setString(1, txtQuestion.getText());
+                pst.setBytes(2, img_DATA);
+                pst.setString(3, txtAnswer.getText());
+                pst.setString(4, cbbTopic.getSelectedItem().toString());
+                pst.setString(5, cbbMaTV.getSelectedItem().toString());
+                pst.executeUpdate();
+                load_dataCHĐT();
+                dataEnabledButton();
+                reset();
+                JOptionPane.showMessageDialog(this, "Cập nhật thành công.");
+            } catch (Exception e) {
+                System.out.println(e.toString());
+            }
         }
-
-        dataEnabledButton();
-        reset();
     }//GEN-LAST:event_btnEditActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        StringBuilder sb = new StringBuilder();
         try {
-            String url = "insert into CauHoiDT values (?,?,?,?,?,?)";
-            pst = con.prepareStatement(url);
-            pst.setString(1, txtIDQuestion.getText());
-            pst.setString(2, txtQuestion.getText());
-            pst.setBytes(3, img_DATA);
-            pst.setString(4, txtAnswer.getText());
-            pst.setString(5, cbbTopic.getSelectedItem().toString());
-            pst.setString(6, cbbMaTV.getSelectedItem().toString());
-            pst.executeUpdate();
-            load_dataCHĐT();
-            JOptionPane.showMessageDialog(null, "Lưu dữ liệu thành công.");
+            if (txtIDQuestion.getText().equals("") || txtQuestion.getText().equals("") || txtAnswer.getText().equals("")) {
+                JOptionPane.showMessageDialog(this, "Dữ liệu không được bỏ trống!");
+            } else {
+                hopleMaCHDT(sb);
+                if (sb.length() > 0) { //nếu if trên đúng nó sẽ thêm vào sb 1 đoạn string, ktra độ dài chuỗi này nếu lớn hơn 0 tức là có thông báo
+                    JOptionPane.showMessageDialog(this, sb.toString());
+                } else {
+                    String url = "insert into CauHoiDT values (?,?,?,?,?,?)";
+                    pst = con.prepareStatement(url);
+                    pst.setString(1, txtIDQuestion.getText());
+                    pst.setString(2, txtQuestion.getText());
+                    pst.setBytes(3, img_DATA);
+                    pst.setString(4, txtAnswer.getText());
+                    pst.setString(5, cbbTopic.getSelectedItem().toString());
+                    pst.setString(6, cbbMaTV.getSelectedItem().toString());
+                    pst.executeUpdate();
+                    load_dataCHĐT();
+                    dataEnabledButton();
+                    reset();
+                    flag++;
+                    JOptionPane.showMessageDialog(null, "Lưu dữ liệu thành công.");
+                }
+            }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
-
-        dataEnabledButton();
-        reset();
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
@@ -503,32 +549,58 @@ public class addQDT extends javax.swing.JPanel {
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        dataNotEnabledButton();
         try {
-            pst = con.prepareStatement("Select * from TuVUng where MaTV=?");
-            pst.setString(1, cbbMaTV.getSelectedItem().toString());
+            pst = con.prepareStatement("Select * from CauHoiDT where MaCHDT=?");
+            pst.setString(1, txtSearch.getText());
             rs = pst.executeQuery();
             while (rs.next()) {
-                txtIDQuestion.setText(rs.getString("MaCHTN"));
-                txtQuestion.setText(rs.getString("CauHoi"));
+                txtIDQuestion.setText(rs.getString("MaCHDT"));
+                txtQuestion.setText(rs.getString("CauHoiDT"));
+                byte[] img = rs.getBytes("HinhAnh");
                 txtAnswer.setText(rs.getString("CauTraLoi"));
+                cbbTopic.setSelectedItem(rs.getString("TenChuDe"));
+                cbbMaTV.setSelectedItem(rs.getString("MaTV"));
+
+                ImageIcon imgIcon = new ImageIcon(new ImageIcon(img).getImage().getScaledInstance(lblImg.getWidth(), lblImg.getHeight(), Image.SCALE_SMOOTH));
+                lblImg.setIcon(imgIcon);
+                img_DATA = img;
             }
         } catch (Exception e) {
-            System.out.println(e.toString());
+            JOptionPane.showMessageDialog(this, "KHÔNG TÌM THẤY!");
+            dataEnabledButton();
         }
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void cbbMaTVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbbMaTVActionPerformed
+        txtSearch.setText("");
         try {
-            pst = con.prepareStatement("Select * from TuVung where MaTV=?");
+            pst = con.prepareStatement("Select * from CauHoiDT where MaTV=?");
             pst.setString(1, cbbMaTV.getSelectedItem().toString());
             rs = pst.executeQuery();
             if (rs.next()) {
-                txtAnswer.setText(rs.getString("TuVung"));
+                txtIDQuestion.setText(rs.getString("MaCHDT"));
+                txtQuestion.setText(rs.getString("CauHoiDT"));
+                txtAnswer.setText(rs.getString("CauTraLoi"));
                 byte[] img = rs.getBytes("HinhAnh");
                 ImageIcon imgIcon = new ImageIcon(new ImageIcon(img).getImage().getScaledInstance(lblImg.getWidth(), lblImg.getHeight(), Image.SCALE_SMOOTH));
                 lblImg.setIcon(imgIcon);
                 img_DATA = img;
                 cbbTopic.setSelectedItem(rs.getString("TenChuDe"));
+            } else {
+                txtIDQuestion.setText("");
+                txtQuestion.setText("");
+                pst = con.prepareStatement("SELECT * FROM TuVung WHERE MaTV=?");
+                pst.setString(1, cbbMaTV.getSelectedItem().toString());
+                rs = pst.executeQuery();
+                if (rs.next()) {
+                    byte[] img = rs.getBytes("HinhAnh");
+                    txtAnswer.setText(rs.getString("TuVung"));
+                    cbbTopic.setSelectedItem(rs.getString("TenChuDe"));
+                    ImageIcon imgIcon = new ImageIcon(new ImageIcon(img).getImage().getScaledInstance(lblImg.getWidth(), lblImg.getHeight(), Image.SCALE_SMOOTH));
+                    lblImg.setIcon(imgIcon);
+                    img_DATA = img;
+                }
             }
         } catch (Exception e) {
             System.out.println(e.toString());
@@ -587,6 +659,94 @@ public class addQDT extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnChooseImageActionPerformed
 
+    private void btnTaoMaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTaoMaActionPerformed
+        SinhMaBKT();
+    }//GEN-LAST:event_btnTaoMaActionPerformed
+
+    //Đếm số lượng dòng bài kiểm tra
+    public void getSumRow() {
+        try {
+            pst = con.prepareStatement("Select * from CauHoiDT");
+            rs = pst.executeQuery();
+
+            while (rs.next()) {
+                flag++;
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi tải dữ liệu mã câu hỏi điền từ!");
+        }
+    }
+
+    //Sinh mã bài kiểm tra
+    public void SinhMaBKT() {
+        try {
+            pst = con.prepareStatement("Select * from CauHoiDT");
+            rs = pst.executeQuery();
+
+            int i = 1;
+            while (rs.next()) {
+                String checkMaBKT = rs.getString("MaCHDT");
+
+                String temp = "";
+                if (i < 10) {
+                    temp = "DT00" + i;
+                } else {
+                    temp = "DT0" + i;
+                }
+
+                if (i < flag - 1 && !checkMaBKT.trim().equals(temp)) {
+                    if (i < 10) {
+                        MaCHDT = "DT00" + i;
+                    } else {
+                        MaCHDT = "DT0" + i;
+                    }
+                    break;
+                }
+                i += 1;
+                if (i == flag) {
+                    if (i < 10) {
+                        MaCHDT = "DT00" + i;
+                    } else {
+                        MaCHDT = "DT0" + i;
+                    }
+                }
+            }
+//            if (MaBKT.isEmpty()) {
+//                MaBKT = "BKT0" + 1;
+//            }
+            txtIDQuestion.setText(MaCHDT);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi tải dữ liệu MaCHDT!");
+        }
+    }
+
+    private void hopleMaCHDT(StringBuilder sb) {
+        try {
+            String check_url = "Select * from CauHoiDT where MaCHDT = '" + txtIDQuestion.getText() + "'";
+            st = con.createStatement();
+            rs = st.executeQuery(check_url);
+
+            //Kiểm tra trùng id
+            if (rs.next()) {
+                sb.append("Mã câu hỏi điền từ này đã tồn tại!\n");
+                txtIDQuestion.setBackground(Color.green);
+            } else {
+                String MaCHDT = txtIDQuestion.getText().trim();
+                //Mã ND phải gồm EFK và 3 chữ số
+                String regex = "DT\\d{3}";
+                Pattern pattern = Pattern.compile(regex);
+                Matcher matcher = pattern.matcher(MaCHDT);
+                if (!matcher.find()) {
+                    sb.append("Mã câu hỏi điền từ sai định dạng, Mã câu hỏi điền từ phải gồm DT và 3 chữ số, VD: DT001\n");
+                    txtIDQuestion.setBackground(Color.green);
+                } else {
+                    txtIDQuestion.setBackground(Color.white);
+                }
+            }
+        } catch (Exception e) {
+        }
+    }
+
     public void dataEnabledButton() {
         btnAdd.setEnabled(true);
         btnSave.setEnabled(false);
@@ -599,6 +759,8 @@ public class addQDT extends javax.swing.JPanel {
         cbbTopic.setEnabled(false);
         txtAnswer.setEnabled(false);
         lblImg.setEnabled(false);
+        btnChooseImage.setEnabled(false);
+        btnTaoMa.setEnabled(false);
     }
 
     public void dataNotEnabledButton() {
@@ -613,6 +775,8 @@ public class addQDT extends javax.swing.JPanel {
         cbbTopic.setEnabled(true);
         txtAnswer.setEnabled(true);
         lblImg.setEnabled(true);
+        btnChooseImage.setEnabled(true);
+        btnTaoMa.setEnabled(true);
     }
 
     public void reset() {
@@ -621,8 +785,10 @@ public class addQDT extends javax.swing.JPanel {
         txtQuestion.setText("");
         txtSearch.setText("");
         cbbMaTV.setSelectedIndex(0);
-        cbbTopic.setSelectedIndex(0);
+        cbbTopic.setSelectedIndex(-1);
         lblImg.setIcon(null);
+
+        txtIDQuestion.setBackground(Color.white);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -635,6 +801,7 @@ public class addQDT extends javax.swing.JPanel {
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSearch;
+    private javax.swing.JButton btnTaoMa;
     private javax.swing.JComboBox<String> cbbMaTV;
     private javax.swing.JComboBox<String> cbbTopic;
     private javax.swing.JLabel jLabel1;

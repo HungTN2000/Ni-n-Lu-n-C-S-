@@ -12,18 +12,19 @@ import java.util.Date;
  * @author HP
  */
 public class listBKT {
-    private String maBKT, maND, tenCapDo, tenChuDe;
+    private String maBKT, maND, tenCapDo, tenChuDe, hinhThuc;
     private float Diem;
     private String NgayKiem;
 
     public listBKT() {
     }
 
-    public listBKT(String maBKT, String maND, String tenCapDo, String tenChuDe, float Diem, String NgayKiem) {
+    public listBKT(String maBKT, String maND, String tenCapDo, String tenChuDe, String hinhThuc, float Diem, String NgayKiem) {
         this.maBKT = maBKT;
         this.maND = maND;
         this.tenCapDo = tenCapDo;
         this.tenChuDe = tenChuDe;
+        this.hinhThuc = hinhThuc;
         this.Diem = Diem;
         this.NgayKiem = NgayKiem;
     }
@@ -58,6 +59,14 @@ public class listBKT {
 
     public void setTenChuDe(String tenChuDe) {
         this.tenChuDe = tenChuDe;
+    }
+
+    public String getHinhThuc() {
+        return hinhThuc;
+    }
+
+    public void setHinhThuc(String hinhThuc) {
+        this.hinhThuc = hinhThuc;
     }
 
     public float getDiem() {

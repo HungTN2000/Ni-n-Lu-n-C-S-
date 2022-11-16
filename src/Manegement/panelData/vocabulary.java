@@ -17,6 +17,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -38,6 +40,9 @@ public class vocabulary extends javax.swing.JPanel {
 
 //    final String col[] = {"MÃ TV", "TỪ VỰNG", "PHIÊN ÂM", "NGHĨA", "HÌNH ẢNH", "TÊN CHỦ ĐỀ"};
 //    final DefaultTableModel tbn = new DefaultTableModel(col, 0);
+    ArrayList<listV> list = new ArrayList<listV>();
+    int current = 0;
+
     DefaultTableModel tbn = new DefaultTableModel();
     Connect a = new Connect();
     Connection con = a.getConnection();
@@ -48,45 +53,50 @@ public class vocabulary extends javax.swing.JPanel {
     String fPath = null;
     byte[] img_DATA;
 
+    String MaTV = "";
+    int flag = 1;
+
     public vocabulary() {
         initComponents();
+        getSumRow();
+        loadDataCBBTopic(); //tải dữ liệu combobox tên chủ đề
+        loadDataCBBMaTV(); //tải dữ liệu combobox mã từ vựng
+
+        listVocabularyManagement();
         load_dataVocabulary();
-        loadDataCBBTopic();
-        loadDataCBBMaTV();
+
+        dataEnabledButton();
     }
 
-    public ArrayList<listV> listVocabularyManagement() {
-        ArrayList<listV> adList = new ArrayList<>();
+    public void listVocabularyManagement() {
         try {
             String url = "Select * from TuVung";
             st = con.createStatement();
             rs = st.executeQuery(url);
+            list.clear();
             listV data;
             while (rs.next()) {
                 data = new listV(rs.getString("MaTV"), rs.getString("TuVung"), rs.getString("PhienAm"), rs.getString("Nghia"), rs.getBytes("HinhAnh"), rs.getString("TenChuDe"));
-                adList.add(data);
+                list.add(data);
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
-        return adList;
     }
 
     public void load_dataVocabulary() {
-        ArrayList<listV> list = listVocabularyManagement();
         tbn = (DefaultTableModel) tblV.getModel();
         tbn.setRowCount(0);
         for (listV i : list) {
             tbn.addRow(new Object[]{i.getMaTV(), i.getTenTV(), i.getPro(), i.getVn(), i.getImage(), i.getTopic()});
         }
-        
+
         JTableHeader Theader = tblV.getTableHeader();
 
         Theader.setBackground(new Color(18, 16, 14));
         Theader.setForeground(Color.black);
 
         Theader.setFont(new Font("Roboto", Font.BOLD, 17));
-        Theader.setForeground(Color.white);
         ((DefaultTableCellRenderer) Theader.getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
 
         tblV.setFont(new Font("Roboto", Font.PLAIN, 17));
@@ -96,7 +106,7 @@ public class vocabulary extends javax.swing.JPanel {
         dataEnabledButton();
         reset();
     }
-    
+
     public ImageIcon ResizeImage(String ImagePath) {
         ImageIcon MyImage = new ImageIcon(ImagePath);
         Image img = MyImage.getImage();
@@ -132,7 +142,7 @@ public class vocabulary extends javax.swing.JPanel {
             }
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Lỗi lấy tên chủ đề!");
+            JOptionPane.showMessageDialog(this, "Lỗi lấy mã từ vựng!");
         }
     }
 
@@ -162,6 +172,7 @@ public class vocabulary extends javax.swing.JPanel {
         jLabel5 = new javax.swing.JLabel();
         cbbTopic = new javax.swing.JComboBox<>();
         lblImg = new javax.swing.JLabel();
+        btnTaoMa = new javax.swing.JButton();
         HeaderSearch = new javax.swing.JPanel();
         btnSearch = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
@@ -252,36 +263,47 @@ public class vocabulary extends javax.swing.JPanel {
         lblImg.setOpaque(true);
         lblImg.setPreferredSize(new java.awt.Dimension(600, 300));
 
+        btnTaoMa.setFont(new java.awt.Font("Dialog", 0, 16)); // NOI18N
+        btnTaoMa.setText("Tạo mã");
+        btnTaoMa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTaoMaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(37, 37, 37)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cbbTopic, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtVN, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtTV, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtPhiemAm, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtMaTV, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
+                        .addComponent(txtMaTV, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnTaoMa))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(cbbTopic, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtVN, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(txtTV, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtPhiemAm, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addGap(18, 18, Short.MAX_VALUE)
                 .addComponent(lblImg, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -294,7 +316,8 @@ public class vocabulary extends javax.swing.JPanel {
                         .addGap(50, 50, 50)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtMaTV, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtMaTV, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnTaoMa, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtTV, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -442,8 +465,8 @@ public class vocabulary extends javax.swing.JPanel {
                     .addComponent(btnSearch, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtSearch))
                 .addGap(18, 18, 18)
-                .addComponent(cbbMaTV, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(152, Short.MAX_VALUE))
+                .addComponent(cbbMaTV, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(147, Short.MAX_VALUE))
             .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
@@ -491,19 +514,11 @@ public class vocabulary extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnSearchActionPerformed
-
-    private void cbbMaTVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbbMaTVActionPerformed
-        int Flag = 0;
         dataNotEnabledButton();
         try {
             pst = con.prepareStatement("SELECT * FROM TuVung WHERE MaTV=?");
-            pst.setString(1, cbbMaTV.getSelectedItem().toString());
+            pst.setString(1, txtSearch.getText());
             rs = pst.executeQuery();
-            if (cbbTopic.isShowing() && Flag > 0) {
-                cbbTopic.removeItem(1);
-            }
             while (rs.next()) {
                 txtMaTV.setText(rs.getString("MaTV"));
                 txtTV.setText(rs.getString("TuVung"));
@@ -514,12 +529,36 @@ public class vocabulary extends javax.swing.JPanel {
                 ImageIcon imgIcon = new ImageIcon(new ImageIcon(img).getImage().getScaledInstance(lblImg.getWidth(), lblImg.getHeight(), Image.SCALE_SMOOTH));
                 lblImg.setIcon(imgIcon);
                 img_DATA = img;
-                Flag += 1;
             }
-            String temp = Integer.toString(Flag);
-            //txtSearch.setText(cbbTopic.getSelectedItem().toString());
         } catch (Exception e) {
             System.out.println(e.toString());
+        }
+    }//GEN-LAST:event_btnSearchActionPerformed
+
+    private void cbbMaTVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbbMaTVActionPerformed
+        dataNotEnabledButton();
+        txtSearch.setText("");
+        if (cbbMaTV.getSelectedIndex() == 0) {
+            reset();
+        } else {
+            try {
+                pst = con.prepareStatement("SELECT * FROM TuVung WHERE MaTV=?");
+                pst.setString(1, cbbMaTV.getSelectedItem().toString());
+                rs = pst.executeQuery();
+                while (rs.next()) {
+                    txtMaTV.setText(rs.getString("MaTV"));
+                    txtTV.setText(rs.getString("TuVung"));
+                    byte[] img = rs.getBytes("HinhAnh");
+                    txtPhiemAm.setText(rs.getString("PhienAm"));
+                    txtVN.setText(rs.getString("Nghia"));
+                    cbbTopic.setSelectedItem(rs.getString("TenChuDe"));
+                    ImageIcon imgIcon = new ImageIcon(new ImageIcon(img).getImage().getScaledInstance(lblImg.getWidth(), lblImg.getHeight(), Image.SCALE_SMOOTH));
+                    lblImg.setIcon(imgIcon);
+                    img_DATA = img;
+                }
+            } catch (Exception e) {
+                System.out.println(e.toString());
+            }
         }
     }//GEN-LAST:event_cbbMaTVActionPerformed
 
@@ -556,36 +595,46 @@ public class vocabulary extends javax.swing.JPanel {
     }//GEN-LAST:event_btnChooseImageActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        try {
-            pst = con.prepareStatement("Delete TuVung where MaTV=?");
-            pst.setString(1, tblV.getValueAt(tblV.getSelectedRow(), 0).toString());
-            if (JOptionPane.showConfirmDialog(this, "Bạn có muốn xóa?", "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                pst.executeUpdate();
-                load_dataVocabulary();
-                JOptionPane.showMessageDialog(this, "Xóa thành công");
+        if (txtMaTV.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Chọn mã từ vựng cần sửa!");
+        } else {
+            try {
+                pst = con.prepareStatement("Delete TuVung where MaTV=?");
+                pst.setString(1, tblV.getValueAt(tblV.getSelectedRow(), 0).toString());
+                if (JOptionPane.showConfirmDialog(this, "Bạn có muốn xóa?", "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    pst.executeUpdate();
+                    listVocabularyManagement();
+                    load_dataVocabulary();
+                    JOptionPane.showMessageDialog(this, "Xóa thành công");
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Xóa thất bại");
             }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Xóa thất bại");
         }
-
+        flag--;
         dataEnabledButton();
         reset();
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-        try {
-            pst = con.prepareStatement("Update TuVung set TuVung=?,PhienAm=?,Nghia=?,HinhAnh=?, TenChuDe=? where MatV=?");
-            pst.setString(6, txtMaTV.getText());
-            pst.setString(1, txtTV.getText());
-            pst.setString(2, txtPhiemAm.getText());
-            pst.setString(3, txtVN.getText());
-            pst.setBytes(4, img_DATA);
-            pst.setString(5, cbbTopic.getSelectedItem().toString());
-            pst.executeUpdate();
-            load_dataVocabulary();
-            JOptionPane.showMessageDialog(this, "Cập nhật thành công.");
-        } catch (Exception e) {
-            System.out.println(e.toString());
+        if (txtMaTV.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Chọn mã từ vựng cần sửa!");
+        } else {
+            try {
+                pst = con.prepareStatement("Update TuVung set TuVung=?,PhienAm=?,Nghia=?,HinhAnh=?, TenChuDe=? where MatV=?");
+                pst.setString(6, txtMaTV.getText());
+                pst.setString(1, txtTV.getText());
+                pst.setString(2, txtPhiemAm.getText());
+                pst.setString(3, txtVN.getText());
+                pst.setBytes(4, img_DATA);
+                pst.setString(5, cbbTopic.getSelectedItem().toString());
+                pst.executeUpdate();
+                listVocabularyManagement();
+                load_dataVocabulary();
+                JOptionPane.showMessageDialog(this, "Cập nhật thành công.");
+            } catch (Exception e) {
+                System.out.println(e.toString());
+            }
         }
 
         dataEnabledButton();
@@ -593,24 +642,36 @@ public class vocabulary extends javax.swing.JPanel {
     }//GEN-LAST:event_btnEditActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        StringBuilder sb = new StringBuilder();
         try {
-            String url = "insert into TuVung values (?,?,?,?,?,?)";
-            pst = con.prepareStatement(url);
-            pst.setString(1, txtMaTV.getText());
-            pst.setString(2, txtTV.getText());
-            pst.setString(3, txtPhiemAm.getText());
-            pst.setString(4, txtVN.getText());
-            pst.setBytes(5, img_DATA);
-            pst.setString(6, cbbTopic.getSelectedItem().toString());
-            pst.executeUpdate();
-            load_dataVocabulary();
-            JOptionPane.showMessageDialog(null, "Lưu dữ liệu thành công.");
+            if (txtMaTV.getText().equals("") || txtTV.getText().equals("") || txtPhiemAm.getText().equals("") || txtVN.getText().equals("")) {
+                JOptionPane.showMessageDialog(this, "Dữ liệu không được bỏ trống!");
+            } else {
+                hopleMaTV(sb);
+                if (sb.length() > 0) { //nếu if trên đúng nó sẽ thêm vào sb 1 đoạn string, ktra độ dài chuỗi này nếu lớn hơn 0 tức là có thông báo
+                    JOptionPane.showMessageDialog(this, sb.toString());
+                } else {
+                    String url = "insert into TuVung values (?,?,?,?,?,?)";
+                    pst = con.prepareStatement(url);
+                    pst.setString(1, txtMaTV.getText());
+                    pst.setString(2, txtTV.getText());
+                    pst.setString(3, txtPhiemAm.getText());
+                    pst.setString(4, txtVN.getText());
+                    pst.setBytes(5, img_DATA);
+                    pst.setString(6, cbbTopic.getSelectedItem().toString());
+                    pst.executeUpdate();
+                    listVocabularyManagement();
+                    load_dataVocabulary();
+                    dataEnabledButton();
+                    reset();
+                    loadDataCBBMaTV();
+                    flag++;
+                    JOptionPane.showMessageDialog(null, "Lưu dữ liệu thành công.");
+                }
+            }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
-
-        dataEnabledButton();
-        reset();
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
@@ -622,24 +683,124 @@ public class vocabulary extends javax.swing.JPanel {
         TableRowSorter<DefaultTableModel> trs = new TableRowSorter<DefaultTableModel>(model);
         tblV.setRowSorter(trs);
         trs.setRowFilter(RowFilter.regexFilter(txtSearch.getText().trim()));
+
+
     }//GEN-LAST:event_txtSearchKeyReleased
 
     private void tblVMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblVMouseClicked
-        int i = tblV.getSelectedRow();
-        DefaultTableModel model = (DefaultTableModel) tblV.getModel();
+        current = tblV.getSelectedRow();
+        show_frame(current);
 
-        txtMaTV.setText(model.getValueAt(i, 0).toString());
-        txtTV.setText(model.getValueAt(i, 1).toString());
-        txtPhiemAm.setText(model.getValueAt(i, 2).toString());
-        txtVN.setText(model.getValueAt(i, 3).toString());
-        byte[] img = (listVocabularyManagement().get(i).getImage());
+        dataNotEnabledButton();
+        //cbbMaTV.setSelectedIndex(0);
+        txtSearch.setText("");
+    }//GEN-LAST:event_tblVMouseClicked
+
+    private void btnTaoMaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTaoMaActionPerformed
+        SinhMaBKT();
+    }//GEN-LAST:event_btnTaoMaActionPerformed
+
+    public void show_frame(int current) {
+        listV p = list.get(current);
+
+        txtMaTV.setText(p.getMaTV());
+        txtTV.setText(p.getTenTV());
+        txtPhiemAm.setText(p.getPro());
+        txtVN.setText(p.getVn());
+        byte[] img = (p.getImage());
         ImageIcon imgIcon = new ImageIcon(new ImageIcon(img).getImage().getScaledInstance(lblImg.getWidth(), lblImg.getHeight(), Image.SCALE_SMOOTH));
         lblImg.setIcon(imgIcon);
         img_DATA = img;
-        cbbTopic.setSelectedItem(model.getValueAt(i, 5).toString());
+        cbbTopic.setSelectedItem(p.getTopic());
 
-        dataNotEnabledButton();
-    }//GEN-LAST:event_tblVMouseClicked
+    }
+
+    private void hopleMaTV(StringBuilder sb) {
+        try {
+            String check_url = "Select * from TuVung where MaTV = '" + txtMaTV.getText() + "'";
+            st = con.createStatement();
+            rs = st.executeQuery(check_url);
+
+            //Kiểm tra trùng id
+            if (rs.next()) {
+                sb.append("Mã từ vựng này đã tồn tại!\n");
+                txtMaTV.setBackground(Color.green);
+            } else {
+                String MaTV = txtMaTV.getText().trim();
+                //Mã ND phải gồm EFK và 3 chữ số
+                String regex = "TV\\d{3}";
+                Pattern pattern = Pattern.compile(regex);
+                Matcher matcher = pattern.matcher(MaTV);
+                txtMaTV.setBackground(Color.white);
+                if (!matcher.find()) {
+                    sb.append("Mã từ vựng sai định dạng, Mã từ vựng phải gồm TV và 3 chữ số, VD: TV001\n");
+                    txtMaTV.setBackground(Color.green);
+                } else {
+                    txtMaTV.setBackground(Color.white);
+                }
+            }
+        } catch (Exception e) {
+        }
+    }
+
+    //Đếm số lượng dòng bài kiểm tra
+    public void getSumRow() {
+        try {
+            pst = con.prepareStatement("Select * from TuVung");
+            rs = pst.executeQuery();
+
+            while (rs.next()) {
+                flag++;
+            }
+            String t = Integer.toString(flag);
+            txtSearch.setText(t);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi tải dữ liệu mã từ vựng!");
+        }
+    }
+
+    //Sinh mã bài kiểm tra
+    public void SinhMaBKT() {
+        try {
+            pst = con.prepareStatement("Select * from TuVung");
+            rs = pst.executeQuery();
+
+            int i = 1;
+            while (rs.next()) {
+                String checkMaBKT = rs.getString("MaTV");
+
+                String temp = "";
+                if (i < 10) {
+                    temp = "TV00" + i;
+                } else {
+                    temp = "TV0" + i;
+                }
+
+                if (i < flag - 1 && !checkMaBKT.trim().equals(temp)) {
+                    if (i < 10) {
+                        MaTV = "TV00" + i;
+                    } else {
+                        MaTV = "TV0" + i;
+                    }
+                    break;
+                }
+                i += 1;
+                if (i == flag) {
+                    if (i < 10) {
+                        MaTV = "TV00" + i;
+                    } else {
+                        MaTV = "TV0" + i;
+                    }
+                }
+            }
+//            if (MaBKT.isEmpty()) {
+//                MaBKT = "BKT0" + 1;
+//            }
+            txtMaTV.setText(MaTV);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi tải dữ liệu MaTV!");
+        }
+    }
 
     public void dataEnabledButton() {
         btnAdd.setEnabled(true);
@@ -654,6 +815,7 @@ public class vocabulary extends javax.swing.JPanel {
         txtVN.setEnabled(false);
         cbbTopic.setEnabled(false);
         lblImg.setEnabled(false);
+        btnTaoMa.setEnabled(false);
     }
 
     public void dataNotEnabledButton() {
@@ -669,16 +831,20 @@ public class vocabulary extends javax.swing.JPanel {
         txtVN.setEnabled(true);
         cbbTopic.setEnabled(true);
         lblImg.setEnabled(true);
+        btnTaoMa.setEnabled(true);
     }
 
     public void reset() {
         txtMaTV.setText("");
-        cbbTopic.setSelectedIndex(-1);
+        cbbTopic.setSelectedIndex(0);
         txtTV.setText("");
         txtPhiemAm.setText("");
         txtVN.setText("");
         txtSearch.setText("");
         lblImg.setIcon(null);
+        cbbMaTV.setSelectedIndex(0);
+
+        txtMaTV.setBackground(Color.white);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -693,6 +859,7 @@ public class vocabulary extends javax.swing.JPanel {
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSearch;
+    private javax.swing.JButton btnTaoMa;
     private javax.swing.JComboBox<String> cbbMaTV;
     private javax.swing.JComboBox<String> cbbTopic;
     private javax.swing.JLabel jLabel1;

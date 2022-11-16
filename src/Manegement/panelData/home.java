@@ -25,7 +25,7 @@ public class home extends javax.swing.JPanel {
     public void LoadBG() {
         ImageIcon MyImage = new ImageIcon("C:\\Java-JSP\\duan9\\src\\img\\Background\\20.jpg");
         Image img = MyImage.getImage();
-        Image newImg = img.getScaledInstance(1392, 872, Image.SCALE_SMOOTH);
+        Image newImg = img.getScaledInstance(1400, 880, Image.SCALE_SMOOTH);
         ImageIcon image = new ImageIcon(newImg);
         lblBg.setIcon(image);
     }
@@ -58,7 +58,7 @@ public class home extends javax.swing.JPanel {
         jPanel1.add(jLabel1, java.awt.BorderLayout.CENTER);
 
         add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
-        add(lblBg, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1392, 872));
+        add(lblBg, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1400, 880));
     }// </editor-fold>//GEN-END:initComponents
 
 

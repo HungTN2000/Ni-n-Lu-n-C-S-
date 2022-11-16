@@ -7,13 +7,14 @@ package Manegement.classData;
 
 import java.util.Date;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 
 /**
  *
  * @author HP
  */
 public class listProfile {
-    private String MaND, Taikhoan, MatKhau, HoTen;
+    private String MaND, TaiKhoan, MatKhau, HoTen;
     private boolean GioiTinh;
     private String NgaySinh, DiaChi, SDT, Email;
 
@@ -22,7 +23,7 @@ public class listProfile {
 
     public listProfile(String MaND, String Taikhoan, String MatKhau, String HoTen, boolean GioiTinh, String NgaySinh, String DiaChi, String SDT, String Email) {
         this.MaND = MaND;
-        this.Taikhoan = Taikhoan;
+        this.TaiKhoan = Taikhoan;
         this.MatKhau = MatKhau;
         this.HoTen = HoTen;
         this.GioiTinh = GioiTinh;
@@ -41,11 +42,11 @@ public class listProfile {
     }
 
     public String getTaikhoan() {
-        return Taikhoan;
+        return TaiKhoan;
     }
 
     public void setTaikhoan(String Taikhoan) {
-        this.Taikhoan = Taikhoan;
+        this.TaiKhoan = Taikhoan;
     }
     
     public String getMatKhau() {
